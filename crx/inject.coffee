@@ -1,6 +1,8 @@
 window.requestAnimationFrame ?= window.webkitRequestAnimationFrame
 window.cancelAnimationFrame ?= window.webkitCancelAnimationFrame
 
+scrollCount = 0
+
 speeds  =
   Normal: 5
   Control: 1
@@ -10,12 +12,22 @@ speeds  =
 currentSpeed = 'Normal'
 
 if chrome.storage
-  # read options and update speeds
-  chrome.storage.local.get null, (options) ->
+  # load speeds
+  chrome.storage.local.get ['Alt', 'Control', 'Normal'], (options) ->
     speeds[option] = parseInt(value) for option, value of options
+  # load scroll count
+  chrome.storage.local.get {'scroll': 0}, (options) ->
+    scrollCount = parseInt(options['scroll'])
+
   # update speeds as soon as options change
   chrome.storage.onChanged.addListener (options) ->
-    speeds[option] = parseInt(value.newValue) for option, value of options
+    for option, value of options
+      if option in ['Alt', 'Control', 'Normal']
+        speeds[option] = parseInt(value.newValue)
+      else if option is 'scroll'
+        newValue = parseInt(value.newValue)
+        scrollCount = newValue if scrollCount < newValue
+
 else
   window.SmoothKeyScrollSpeeds = speeds
 
@@ -46,7 +58,7 @@ processKeyEvent = (event) ->
           stopMoving(direction)
     when 'Control', 'Alt', 'Meta'
       currentSpeed = if keyState is on then event.keyIdentifier else 'Normal'
-      event.preventDefault() if isMovingAny()
+      event.preventDefault() if isMoving()
 
 # Do not scroll if user is editing text, playing a game or something else
 shouldScroll = (event) ->
@@ -55,19 +67,20 @@ shouldScroll = (event) ->
   return no if event.defaultPrevented
   return no if /input|textarea|select|embed/i.test event.target.nodeName
   return no if currentSpeed is 'Meta'
-  event.preventDefault() if currentSpeed is 'Normal' or isMovingAny()
+  event.preventDefault() if currentSpeed is 'Normal' or isMoving()
   yes
 
-isMovingAny = -> moving.Up or moving.Down or moving.Left or moving.Right
+isMoving = -> moving.Up or moving.Down or moving.Left or moving.Right
 
 startMoving = (direction) ->
   moving[direction] = true
   moving[oposite[direction]] = false
   currentFrame ?= requestAnimationFrame(move)
+  incrementScrollCount()
 
 stopMoving = (direction) ->
   moving[direction] = false
-  currentFrame = cancelAnimationFrame(currentFrame) unless isMovingAny()
+  currentFrame = cancelAnimationFrame(currentFrame) unless isMoving()
 
 move = ->
   currentFrame = requestAnimationFrame(move)
@@ -76,6 +89,9 @@ move = ->
   x = if moving.Right then amount else if moving.Left then -amount
   window.scrollBy(x, y) if x or y
 
+incrementScrollCount = ->
+  scrollCount += 1
+  chrome.storage.local.set('scroll': scrollCount)
 
 # Setup event listeners
 window.addEventListener('keydown', processKeyEvent, false)

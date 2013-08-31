@@ -1,17 +1,16 @@
 $ ->
     updatePx = (element, value) -> element.next().text(value + 'px / frame')
-
     # Update user interface with existing option values
     if chrome.storage
-        chrome.storage.local.get(null, (options) ->
+        chrome.storage.local.get ['Alt', 'Control', 'Normal'], (options) ->
             for option, value of options
                 slider = $('#' + option)
                 slider.val(value)
                 updatePx(slider, value)
-        )
+
 
     # Save option values as soon as the user changes them
-    $('.slider').change ->
+    $('.slider.setting').change ->
         slider = $(this)
         id = slider.attr('id')
         value = slider.val()
