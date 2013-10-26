@@ -8,6 +8,7 @@ speeds  =
   Meta: 0
 
 currentSpeed = 'Normal'
+selectionMode = off
 
 if chrome.storage
   # load speeds
@@ -51,6 +52,8 @@ processKeyEvent = (event) ->
     when 'Control', 'Alt', 'Meta'
       currentSpeed = if keyState is on then event.keyIdentifier else 'Normal'
       event.preventDefault() if isMoving()
+    when 'Shift'
+      selectionMode = keyState
 
 # Do not scroll if user is editing text, playing a game or something else
 shouldScroll = (event) ->
@@ -59,6 +62,7 @@ shouldScroll = (event) ->
   return no if event.defaultPrevented
   return no if /input|textarea|select|embed/i.test event.target.nodeName
   return no if currentSpeed is 'Meta'
+  return no if selectionMode is on
   event.preventDefault() if currentSpeed is 'Normal' or isMoving()
   yes
 
