@@ -20,7 +20,7 @@
 
    ],
    "background": {
-     "scripts": ["options/components/jquery/jquery.js","eventPage.js"],
+     "scripts": ["eventPage.js"],
      "persistent": false
    },
   "options_page": "options/options.html",

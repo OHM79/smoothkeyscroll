@@ -1,8 +1,6 @@
 window.requestAnimationFrame ?= window.webkitRequestAnimationFrame
 window.cancelAnimationFrame ?= window.webkitCancelAnimationFrame
 
-scrollCount = 0
-
 speeds  =
   Normal: 5
   Control: 1
@@ -15,18 +13,12 @@ if chrome.storage
   # load speeds
   chrome.storage.local.get ['Alt', 'Control', 'Normal'], (options) ->
     speeds[option] = parseInt(value) for option, value of options
-  # load scroll count
-  chrome.storage.local.get {'scroll': 0}, (options) ->
-    scrollCount = parseInt(options['scroll'])
 
   # update speeds as soon as options change
   chrome.storage.onChanged.addListener (options) ->
     for option, value of options
       if option in ['Alt', 'Control', 'Normal']
         speeds[option] = parseInt(value.newValue)
-      else if option is 'scroll'
-        newValue = parseInt(value.newValue)
-        scrollCount = newValue if scrollCount < newValue
 
 else
   window.SmoothKeyScrollSpeeds = speeds
@@ -76,7 +68,6 @@ startMoving = (direction) ->
   moving[direction] = true
   moving[oposite[direction]] = false
   currentFrame ?= requestAnimationFrame(move)
-  incrementScrollCount()
 
 stopMoving = (direction) ->
   moving[direction] = false
@@ -88,10 +79,6 @@ move = ->
   y = if moving.Down then amount else if moving.Up then -amount
   x = if moving.Right then amount else if moving.Left then -amount
   window.scrollBy(x, y) if x or y
-
-incrementScrollCount = ->
-  scrollCount += 1
-  chrome.storage.local.set('scroll': scrollCount)
 
 # Setup event listeners
 window.addEventListener('keydown', processKeyEvent, false)
