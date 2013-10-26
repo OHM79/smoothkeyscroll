@@ -1,5 +1,5 @@
-chrome.runtime.onInstalled.addListener ->
-	# chrome.tabs.create({url: "options/options.html"})
+chrome.runtime.onInstalled.addListener (details) ->
+	chrome.tabs.create({url: "options/options.html"}) if details.reason is "install"
 	chrome.alarms.create
 		'delayInMinutes': Math.floor(Math.random()*1440)
 		'periodInMinutes': 1440
