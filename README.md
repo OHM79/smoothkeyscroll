@@ -29,6 +29,11 @@ Changes
 - Fix collision between meta key and browser native functionality
 
 
+Development
+------------
+Dependencies can be installed with `bower install`.
+
+
 License
 -------
 © Copyright 2011  Aristides Lourenço (@aristidesfl)
