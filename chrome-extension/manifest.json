@@ -4,13 +4,13 @@
   "description": "Smooth scroll with the keyboard",
   "offline_enabled": true,
   "icons": {
-    "128": "icon.png"
+    "128": "img/icon.png"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "exclude_matches":["*://aristidesfl.github.com/smoothkeyscroll*"],
-      "js": ["inject.js"]
+      "js": ["js/content.js"]
     }
   ],
   "permissions": [
@@ -20,10 +20,10 @@
 
    ],
    "background": {
-     "scripts": ["eventPage.js"],
+     "scripts": ["js/eventPage.js"],
      "persistent": false
    },
-  "options_page": "options/options.html",
+  "options_page": "options.html",
   "manifest_version": 2,
   "homepage_url": "http://aristidesfl.github.com/smoothkeyscroll/",
   "content_security_policy": "script-src 'self' https://ssl.google-analytics.com https://wallet.google.com https://ajax.googleapis.com https://www.google.com/uds/; object-src 'self'"

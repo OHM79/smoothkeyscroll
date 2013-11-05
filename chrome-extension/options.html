@@ -5,30 +5,30 @@
 
         <link rel="stylesheet" href="css/chrome-bootstrap.css">
         <link rel="stylesheet" href="css/options.css">
-        <link rel="icon" type="image/png" href="../icon.png">
-        <script src="javascript/jquery.js"></script>
-        <script src="javascript/options.js"></script>
+        <link rel="icon" type="image/png" href="img/icon.png">
+        <script src="bower_components/jquery/jquery.js"></script>
+        <script src="js/options.js"></script>
     </head>
     <body>
         <header class="center">
-            <img id="icon" src="images/iconOptions.png" alt="icon" >
-            <span id="title" class="">Smooth Key Scroll</span>
+            <img id="icon" src="img/iconOptions.png" alt="icon" >
+            <span id="title">Smooth Key Scroll</span>
         </header>
         <section id="wrapper" class="center roundCorners width">
             <h1>Adjust Speed</h1>
             <div class="setting group-content">
                 <div class="container">
-                    <img src="images/arrow.png" alt="Normal" class="key">
+                    <img src="img/arrow.png" alt="Normal" class="key">
                     <input id="Normal" class="setting slider" type="range" max="50" min="1" step="1" value="5" title="Number of pixels scrolled per frame at approximately 60 frames per second">
                     <span class="value" title="Number of pixels scrolled per frame at approximately 60 frames per second">5px / frame</span>
                 </div>
                 <div class="container">
-                    <img src="images/alt.png" alt="alt" class="key">
+                    <img src="img/alt.png" alt="alt" class="key">
                     <input id="Alt" class="setting slider" type="range" max="50" min="1" step="1" value="20" title="Number of pixels scrolled per frame at approximately 60 frames per second">
                     <span class="value" title="Number of pixels scrolled per frame at approximately 60 frames per second">20px / frame</span>
                 </div>
                 <div class="container">
-                    <img src="images/ctrl.png" alt="ctrl" class="key">
+                    <img src="img/ctrl.png" alt="ctrl" class="key">
                     <input id="Control" class="setting slider" type="range" max="50" min="1" step="1" value="1" title="Number of pixels scrolled per frame at approximately 60 frames per second">
                     <span class="value" title="Number of pixels scrolled per frame at approximately 60 frames per second">1px / frame</span>
                 </div>
@@ -40,7 +40,7 @@
             <p>If you would like to try this, open a new tab and type: <i>chrome://flags</i></p>
             <p>After pressing return, you will be able to find and enable the following two options which should end up like this:</p>
             <div id="flags">
-                <img  src="images/bestresults.png" alt="GPU compositing settings">
+                <img  src="img/bestresults.png" alt="GPU compositing settings">
             </div>
             <p>For the changes to take effect, please restart Google Chrome.</p>
             <p><b>*Chrome flags should be used with caution as most of them are experimental and not to be modified by every user.
@@ -54,6 +54,6 @@
                 &copy;
             </span> 2013 <a href="http://aristidesfl.github.com/">aristidesfl</a>
         </footer>
-        <script type="text/javascript" src="javascript/analytics.js"></script>
+        <script type="text/javascript" src="js/analytics.js"></script>
     </body>
 </html>

@@ -1,6 +1,6 @@
 *.zip
 *.map
-crx/inject.js
-crx/options/javascript/options.js
-crx/eventPage.js
+content.js
+options.js
+eventPage.js
 bower_components
