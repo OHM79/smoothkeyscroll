@@ -1,0 +1,177 @@
+<div>
+<hr class="license separator">
+<section id="section-pay-what-you-wantLicense" @mouseenter="mixpanelTrack('License Hovered')">
+	<div v-show="!license.verified">
+		<div id="section-pay-what-you-want" >
+			<div v-show="!isPaymentFixed">
+				<h1 class="icon-heart big title">Pay What You Want</h1>
+				<p>
+					<!-- Smooth Key Scroll is pay-what-you-want-software. <br> -->
+					<!-- Your contribution will keep development alive and help increase smoothness even more. -->
+					Support the development of Smooth Key Scroll and unlock extra features. A personal license will be delivered to your email, and you will be able to scroll without interruptions.
+				</p>
+				<ol class="pay-steps">
+					<li class="step" id="stepOne" @click="mixpanelTrack('Price Selected')">
+						<h2>1. Name a fair price (in USD)</h2>
+						<ul>
+							<li>
+								<input type="radio" class="overriden radio input" name="price" id="price1" v-model="priceSelector" value="{{payform.prices.one}}">
+								<label class="fake radio ui" for="price1" v-text="payform.prices.one | currency | integer" @click="emptyCustom"></label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input" name="price" id="price2" v-model="priceSelector" value="{{payform.prices.two}}" checked>
+								<label class="fake radio ui" for="price2" v-text="payform.prices.two | currency | integer" @click="emptyCustom"></label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input" name="price" id="price3" v-model="priceSelector" value="{{payform.prices.three}}">
+								<label class="fake radio ui" for="price3" v-text="payform.prices.three | currency | integer" @click="emptyCustom"></label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input" name="price" id="override" v-model="priceSelector" value="custom">
+								<label class="fake radio ui" for="override">Custom</label>
+								<span v-show="priceSelector == 'custom'" transition>
+							<input type="text" id="override-price" size="6" v-model="custom | number" placeholder="35" v-valid:numeric v-valid:min="3" v-valid:group="paymentDetails" @change="mixpanelTrack('Price Customized')">
+							<span class="info-more info-custom" v-show="validator.custom.invalid" transition="delayed-fade">${{cents2dollars(minimum)}} minimum (buy me a coffee)</span>
+								</span>
+							</li>
+						</ul>
+					</li>
+					<li class="step" id="stepTwo">
+						<h2>2. Split up your contribution</h2>
+						<label class="slider-label"> Developers </label>
+						<input id="house-slider" class="slider" type="range" step="1" max="100" v-model="percentageHouse" :style="{background:sliderBackground(percentageHouse, 100)}" title="Developer Percentage" @change="mixpanelTrack('Split Customized')"><span id="house-split" v-text="percentageHouse"></span>%
+						<br>
+						<label id="show-info" class="slider-label icon-triangle" @click="UI.charityInfo = !UI.charityInfo" :class="{open: UI.charityInfo}">Charity</label>
+						<input id="charity-slider" class="slider" type="range" step="1" max="100" v-model="percentageCharity" :style="{background:sliderBackground(percentageCharity, 100)}" title="Charity Percentage" @change="mixpanelTrack('Split Customized')"><span id="charity-split" v-text="percentageCharity"></span>%
+						<div class="animation-wrapper">
+							<ul class="info-more" v-show="UI.charityInfo" transition="slideFade">
+								The charity amount will be evenly divided between these nonprofits:
+								<li>– The <a target="_blank" href="https://www.eff.org/">EFF</a> defends fundamental rights in the digital world. </li>
+								<li>– The <a target="_blank" href="https://www.torproject.org/">Tor Project</a> protects users privacy agains survailance on the Internet. </li>
+							</ul>
+						</div>
+					</li>
+					<li class="step" id="stepThree">
+						<h2>3. Order your license</h2>
+						<div class="pay-buttons" @click="mixpanelTrack('Payment Button Pressed')">
+							<input type="text" class="pay-email" placeholder="Email (to receive the license)" v-model="license.email" v-valid:required v-valid:email v-valid:group="paymentDetails" @change="mixpanelTrack('Email Set')">
+							<button class="button button-pay paypal paypal-real" id="paypalButton" @click="pay('paypal')" :disabled="UI.paying">
+								<span class="content button-spinner" v-show="UI.paying == 'paypal'"></span>
+								<span class="content" v-show="UI.paying != 'paypal'">PayPal</span>
+							</button>
+							<button class="button button-pay bitcoin" id="bitcoinButton" @click="pay('bitcoin')" :disabled="UI.paying">
+								<span class="content button-spinner" v-show="UI.paying == 'bitcoin'"></span>
+								<span class="content" v-show="UI.paying != 'bitcoin'">Bitcoin</span>
+							</button>
+						</div>
+						<!-- <button class="button googlewallet" id="googlewalletButton" @click="pay('googlewallet')"><span class="content icon" :class="loading: UI.loading=='googlewallet'"></span><span class="content">Google Wallet</span></button> -->
+						<!-- <button class="button creditcard" id="creditcardButton" @click="pay('creditcard')"><span class="content icon" :class="loading: UI.loading=='creditcard'"></span><span class="content">Credit Card</span></button> -->
+						<div class="animation-wrapper">
+							<div class="info-more" v-show="UI.paymentError" v-text="UI.paymentMessage" transition="slideFade"></div>
+						</div>
+					</li>
+				</ol>
+			</div>
+			<div v-show="isPaymentFixed">
+				<h1 class="icon-heart big title">Upgrade to Pro</h1>
+				<div class="pay-form">
+					<p>
+						<!-- Smooth Key Scroll is pay-what-you-want-software. <br> -->
+						<!-- Your contribution will keep development alive and help increase smoothness even more. -->
+						Support the development of Smooth Key Scroll and unlock extra features for just {{payform.prices | currency | removeTrailingZeros}} USD. A personal license will be delivered to your email, and you will be able to scroll without interruptions.
+					</p>
+					<!-- <button class="button googlewallet" id="googlewalletButton" @click="pay('googlewallet')"><span class="content icon" :class="loading: UI.loading=='googlewallet'"></span><span class="content">Google Wallet</span></button> -->
+					<!-- <button class="button creditcard" id="creditcardButton" @click="pay('creditcard')"><span class="content icon" :class="loading: UI.loading=='creditcard'"></span><span class="content">Credit Card</span></button> -->
+					<div class="pay-buttons">
+						<input type="text" class="pay-email" placeholder="Email (to receive the license)" v-model="license.email" v-valid:required v-valid:email v-valid:group="paymentDetails">
+						<button class="button button-pay paypal paypal-real" id="paypalButton" @click="pay('paypal')" :disabled="UI.paying">
+							<span class="content button-spinner" v-show="UI.paying == 'paypal'"></span>
+							<span class="content" v-show="UI.paying != 'paypal'">PayPal</span>
+						</button>
+						<button class="button button-pay bitcoin" id="bitcoinButton" @click="pay('bitcoin')" :disabled="UI.paying">
+							<span class="content button-spinner" v-show="UI.paying == 'bitcoin'"></span>
+							<span class="content" v-show="UI.paying != 'bitcoin'">Bitcoin</span>
+						</button>
+					</div>
+					<div class="animation-wrapper">
+						<div class="info-more" v-show="UI.paymentError" v-text="UI.paymentMessage" transition="slideFade"></div>
+					</div>
+				</div>
+			</div>
+			<div class="right">
+				<a href="#license" id="show-license" @click="mutate('#section-pay-what-you-want', '#section-verify-license')">Already have a license?</a>
+			</div>
+			<form id="paypalForm" action="https://www.paypal.com/cgi-bin/webscr?pageState=billing" method="post" target="_blank">
+				<input type="hidden" name="cmd" value="_cart">
+				<input type="hidden" name="upload" value="1">
+				<input type="hidden" name="business" value="S77UX6HX9CFCA">
+				<div v-if="!isPaymentFixed">
+					<input type="hidden" name="item_name_1" value="Smooth Key Scroll License">
+					<input type="hidden" name="amount_1" v-model="house | currency">
+					<input type="hidden" name="item_name_2" value="Charity">
+					<input type="hidden" name="amount_2" v-model="charity | currency">
+				</div>
+				<div v-if="isPaymentFixed">
+					<input type="hidden" name="item_name_1" value="Smooth Key Scroll License">
+					<input type="hidden" name="amount_1" v-model="payform.prices | currency">
+				</div>
+				<input type="hidden" name="pageState" value="billing">
+				<input type="hidden" name="no_shipping" value="1">
+				<input type="hidden" name="custom" v-model="paypalCustom">
+				<input type="hidden" name="email" v-model="license.email">
+				<input type="hidden" name="notify_url" value="https://smoothkeyscroll.herokuapp.com/paypal/confirm">
+				<input type="hidden" name="return" value="chrome-extension://mlofpfdmabpppehddicgclidcaoajmjp/options.html#license">
+				<input type="hidden" name="no_note" value="1">
+				<input type="hidden" name="paymentaction" value="sale">
+			</form>
+		</div>
+		<div id="section-verify-license">
+			<h1>Enter your license</h1>
+			<div>
+				<span class="license-data" id="license-data">
+				<div>
+					<input type="text" id="license-email" class="license-textbox" placeholder="Email" v-model="license.email" v-valid:required v-valid:email :disabled="UI.verifyingLicense" lazy>
+				</div>
+				<div>
+					<input type="text" id="license-key" class="license-textbox" placeholder="License Key" v-model="license.key" v-valid:required :disabled="UI.verifyingLicense" lazy>
+				</div>
+			</span>
+				<button id="verifyLicense" class="button button-verify" @click="verifyLicense" :disabled="UI.verifyingLicense">
+					<span class="content button-spinner" v-show="UI.verifyingLicense"></span>
+					<span class="content" v-show="!UI.verifyingLicense">Submit</span>
+				</button>
+			</div>
+			<div class="animation-wrapper">
+				<div class="info-more" v-show="UI.verificationFailed" v-text="UI.verificationResult" transition="slideFade"></div>
+			</div>
+			<div class="right">
+				<a href="#pay-what-you-want" id="show-pay" @click="mutate('#section-verify-license','#section-pay-what-you-want')">Don't have a license yet?</a>
+			</div>
+		</div>
+		<!-- <div class="info-more" v-show="UI.verificationResult == 'valid'" transition="slideFade">License validated. Thank you!</div> -->
+	</div>
+	<div id="section-certificate" class="certificate" v-show="license.verified">
+		<div class="certificate-head">
+			License Certificate
+		</div>
+		<div class="certificate-body">
+			<!-- <div class="certificate-left"> -->
+			<div class="certificate-section">
+				<h1 class="certificate-title">Email</h1>
+				<p class="certificate-detail" v-text="license.email"></p>
+			</div>
+			<div class="certificate-section">
+				<h1 class="certificate-title">Key</h1>
+				<p class="certificate-detail" v-text="license.key"></p>
+			</div>
+			<span class="stamp animated zoomIn"></span>
+			<!-- </div> -->
+			<!-- <div class="certificate-right"></div> -->
+		</div>
+		<b class="certificate-corner certificate-corner-top-left"></b>
+		<b class="certificate-corner certificate-corner-top-right"></b>
+		<b class="certificate-corner certificate-corner-bottom-left"></b>
+		<b class="certificate-corner certificate-corner-bottom-right"></b>
+	</div>
+</section>
+</div>

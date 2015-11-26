@@ -1,0 +1,16 @@
+{
+    "refs": {
+        "whitelist": false,
+        "blacklist": ["bower_components", "node_modules"],
+        "notTypes": [],
+        "replace": {},
+        "ignore": ["js/v1.4/rollbar.min.js", "img/googlewallet.png", "img/icon*.png"],
+        "wildcards": []
+    },
+    "resources": {
+        "root": ".",
+        "folders": ["img","svg", "js"],
+        "types": ["gif", "png", "jpg", "svg", "js"],
+        "ignore": []
+    }
+}

@@ -1,59 +1,146 @@
+<!DOCTYPE HTML>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Smooth Key Scroll</title>
 
-        <link rel="stylesheet" href="css/chrome-bootstrap.css">
-        <link rel="stylesheet" href="css/options.css">
-        <link rel="icon" type="image/png" href="img/icon.png">
-        <script src="bower_components/jquery/jquery.js"></script>
-        <script src="js/options.js"></script>
-    </head>
-    <body>
-        <header class="center">
-            <img id="icon" src="img/iconOptions.png" alt="icon" >
-            <span id="title">Smooth Key Scroll</span>
-        </header>
-        <section id="wrapper" class="center roundCorners width">
-            <h1>Adjust Speed</h1>
-            <div class="setting group-content">
-                <div class="container">
-                    <img src="img/arrow.png" alt="Normal" class="key">
-                    <input id="Normal" class="setting slider" type="range" max="50" min="1" step="1" value="5" title="Number of pixels scrolled per frame at approximately 60 frames per second">
-                    <span class="value" title="Number of pixels scrolled per frame at approximately 60 frames per second">5px / frame</span>
-                </div>
-                <div class="container">
-                    <img src="img/alt.png" alt="alt" class="key">
-                    <input id="Alt" class="setting slider" type="range" max="50" min="1" step="1" value="20" title="Number of pixels scrolled per frame at approximately 60 frames per second">
-                    <span class="value" title="Number of pixels scrolled per frame at approximately 60 frames per second">20px / frame</span>
-                </div>
-                <div class="container">
-                    <img src="img/ctrl.png" alt="ctrl" class="key">
-                    <input id="Control" class="setting slider" type="range" max="50" min="1" step="1" value="1" title="Number of pixels scrolled per frame at approximately 60 frames per second">
-                    <span class="value" title="Number of pixels scrolled per frame at approximately 60 frames per second">1px / frame</span>
-                </div>
-            </div>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Smooth Key Scroll - Options</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="bower_components/normalize-css/normalize.css">
+	<link rel="stylesheet" href="fonts/fontello/css/fontello.css">
+	<link rel="stylesheet" href="css/fonts.css">
+	<link rel="stylesheet" href="css/options.css">
+	<link rel="stylesheet" href="css/animate.css">
+	<!-- Favicons -->
+	<link rel="icon" type="image/png" href="img/icon128.png" sizes="128x128">
+	<link rel="icon" type="image/png" href="img/icon48.png" sizes="48x48">
+	<link rel="icon" type="image/png" href="img/favicon16@2x.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="img/favicon16.png" sizes="16x16" />
+</head>
 
-            <h1>GPU Acceleration</h1>
-            <p>Enabling GPU compositing and disabling VSync can improve results even more.*
-            </p>
-            <p>If you would like to try this, open a new tab and type: <i>chrome://flags</i></p>
-            <p>After pressing return, you will be able to find and enable the following two options which should end up like this:</p>
-            <div id="flags">
-                <img  src="img/bestresults.png" alt="GPU compositing settings">
-            </div>
-            <p>For the changes to take effect, please restart Google Chrome.</p>
-            <p><b>*Chrome flags should be used with caution as most of them are experimental and not to be modified by every user.
-            If you notice undesirable side effects, please revert settings back to original.</b>
-            </p>
-            <div style="height: 28px;"></div>
+<body>
+	<header class="fade-down-plus">
+		<div class="main-logo">▼</div>
+		<div id="title"> Smooth Key Scroll </div>
+	</header>
+	<main class="main fade-down">
+		<div class="options">
+<!-- 			<section class="section-option">
+				<h1 class="big title">Preferences</h1>
+			</section>
+ -->			<section id="sectionSpeed" class="section-option">
+				<h1 @click="mixpanel('click')">Scrolling Speed</h1>
+				<ul title="Number of pixels scrolled per frame at approximately 60 frames per second">
+					<li class="speed-li">
+						<span class="speed-keys">
+						<span class="chiclet arrow key">▼</span>
+						</span>
+						<!-- <label class="speed-label" for="Normal">Normal</label> -->
+						<input id="Normal" class="slider speed-slider" type="range" max="30" :style="{background:sliderBackground(options.Normal, 30)}" min="1" step="1" v-model="options.Normal">
+						<span class="speed-value" v-text="options.Normal"></span>
+						<span class="speed-value-details"> px</span>
+						<!-- <span class="speed-translation" v-text="options.Normal | speedTranslation" :style="{opacity: options.Normal | translationOpacity"}></span> -->
+					</li>
+					<li class="speed-li">
+						<span class="speed-keys">
+						<span class="chiclet key">alt</span>
+						<span class="plus sign key separator">+</span>
+						<span class="chiclet arrow key">▼</span>
+						</span>
+						<!-- <label class="speed-label" for="Alt">Reading</label> -->
+						<input id="Alt" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Alt, 30)}" v-model="options.Alt">
+						<span class="speed-value" v-text="options.Alt"></span>
+						<span class="speed-value-details"> px</span>
+						<!-- <span class="speed-translation" v-text="options.Alt | speedTranslation"></span> -->
+					</li>
+					<li class="speed-li">
+						<span class="speed-keys">
 
-        </section>
-        <footer>
-            Copyleft <span style="-moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1); transform: scaleX(-1); display: inline-block;">
-                &copy;
-            </span> 2013 <a href="http://aristidesfl.github.com/">aristidesfl</a>
-        </footer>
-        <script type="text/javascript" src="js/analytics.js"></script>
-    </body>
+						<span class="chiclet key">ctrl</span>
+						<span class="plus sign key separator">+</span>
+						<span class="chiclet arrow key">▼</span>
+						</span>
+						<!-- <label class="speed-label" for="Control">Skimming</label> -->
+						<input id="Control" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Control, 30)}" v-model="options.Control">
+						<span class="speed-value" v-text="options.Control"></span>
+						<span class="speed-value-details"> px</span>
+						<!-- <span class="speed-translation" v-text="options.Control | speedTranslation"></span> -->
+					</li>
+				</ul>
+			</section>
+			<!-- <div class="pro separator line"> -->
+			<!-- <span class="icon-lock pro separator text"> Pro Features</span> -->
+			<!-- </div> -->
+			<div class="pro features container">
+				<div class="pro features subcontainer" :class="{locked: UI.proFeaturesCover && !license.verified}">
+					<section id="sectionLayout" class="section-option hidden">
+						<h1>Movement Keys</h1>
+						<ul class="list-main">
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-arrows" value="arrows">
+								<label @click="scrollToPay" class="fake radio ui" for="layout-arrows">Arrows (&#8593;&#8595;&#8592;&#8594;)</label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-vi" value="vi">
+								<label @click="scrollToPay" class="fake radio ui" for="layout-vi">Vim (HJKL)</label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-gamer" value="gamer">
+								<label @click="scrollToPay" class="fake radio ui" for="layout-gamer">Gamer (WASD)</label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-ergo" value="ergo">
+								<label @click="scrollToPay" class="fake radio ui" for="layout-ergo">Ergonomic (IJKL)</label>
+							</li>
+						</ul>
+					</section>
+					<section id="sectionGPU" class="section-option hidden">
+						<h1>Advanced</h1>
+						<ul>
+							<li>
+								<input type="checkbox" id="option-disableHover" class="overriden checkbox input option" v-model="options.disableHover" :disabled="!license.verified">
+								<label @click="scrollToPay" class="fake checkbox ui" for="option-disableHover">Disable mouse hover effects while scrolling.</label>
+								<a href="#info-disable-hover" @click="showMoreInfo = !showMoreInfo" class="icon-info" :class="{open: showMoreInfo}"></a>
+								<p id="test" class="info-more" v-show="showMoreInfo" transition="slideFade">Mouse hover effects are usually unnecessary when scrolling. Disabling them can improve scrolling performance. Read more about this in these <a href="http://www.html5rocks.com/en/tutorials/speed/unnecessary-paints/#toc-combination" target="_blank">two</a> <a href="http://www.thecssninja.com/javascript/pointer-events-60fps" target="_blank">articles</a>. </a>
+								</p>
+							</li>
+						</ul>
+					</section>
+				</div>
+				<div v-if="UI.proFeaturesCover && !license.verified" @click="UI.proFeaturesCover=false" class="pro features cover" transition>
+					<i class="pro icon-lock"></i>
+					<h1 class="pro features title" >Pro Features</h1>
+				</div>
+			</div>
+		</div>
+		<div id="module-license"></div>
+	</main>
+	<footer class="footer">
+		<a id="lifehacker" class="social proof link lifehacker" href="http://lifehacker.com/5979872/smooth-key-scroll-for-chrome-makes-keyboard-scrolling-better">
+			<img class="social proof logo" src="svg/lifehacker.svg" alt="Lifehacker">
+			<p class="social proof quote">this results in a much smoother keyboard scroll</p>
+		</a>
+		<a id="addictivetips" class="social proof link addictivetips" href="http://www.addictivetips.com/web/get-buttery-smooth-keyboard-scrolling-in-google-chrome/">
+			<img class="social proof logo" src="svg/addictivetips.svg" alt="Addictive Tips">
+			<p class="social proof quote">buttery smooth keyboard scrolling in google chrome</p>
+		</a>
+		<nav class="center">
+			<ul class="footerNav">
+				<li><a target="_blank" href="https://github.com/aristidesfl/smoothkeyscroll/issues?state=open">Support</a></li>
+				<li><a target="_blank" href="TERMS.txt">Terms</a></li>
+				<li><a target="_blank" href="LICENSE.txt">License</a></li>
+				<li><a target="_blank" href="PRIVACY.txt">Privacy</a></li>
+				<li><a href="mailto:mail@smoothkeyscroll.com">Contact</a></li>
+				<li><a target="_blank" id="copyright" href="http://www.smoothkeyscroll.com/">&copy; Smooth Key Scroll</a></li>
+			</ul>
+		</nav>
+	</footer>
+	<script src="js/vendor/mixpanel.js"></script>
+	<script src="js/vendor/rollbar.js"></script>
+	<script src="js/browserify/options.js"></script>
+	<script src="js/vendor/analytics.js">
+	</script>
+	<script src="js/content.js"></script>
+</body>
+
 </html>

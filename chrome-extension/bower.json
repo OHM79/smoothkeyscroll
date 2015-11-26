@@ -1,0 +1,23 @@
+{
+  "name": "smooth-key-scroll",
+  "version": "1.0.4",
+  "homepage": "https://github.com/aristidesfl/smoothkeyscroll",
+  "authors": [
+    "Aristides Lourenco <aristidesfl@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "jquery": "2",
+    "normalize-css": "*",
+    "velocity": "*",
+    "vue": "0.11.*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

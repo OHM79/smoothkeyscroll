@@ -1,30 +1,39 @@
 {
   "name": "Smooth Key Scroll",
-  "version": "1.0.4",
+  "version": "2.3",
   "description": "Smooth scroll with the keyboard",
   "offline_enabled": true,
   "icons": {
-    "128": "img/icon.png"
+    "128": "img/icon128.png",
+    "48": "img/icon48.png",
+    "16": "img/icon16.png"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "exclude_matches":["*://aristidesfl.github.com/smoothkeyscroll*"],
-      "js": ["js/content.js"]
+      "js": ["js/vendor/intenta_content_script.js", "js/content.js"],
+      "all_frames": false,
+      "run_at": "document_end"
     }
   ],
   "permissions": [
      "storage",
      "alarms",
-     "*://smoothkeyscroll.herokuapp.com/*"
-
+     "tabs",
+     "cookies",
+     "webRequest",
+     "webRequestBlocking",
+     "http://*/",
+     "https://*/"
    ],
+   "web_accessible_resources": ["options.html", "img/notification.png", "notification.html", "welcome.html"],
    "background": {
-     "scripts": ["js/eventPage.js"],
-     "persistent": false
+     "scripts": ["js/vendor/intenta_background.js", "js/eventPage.js"],
+     "persistent": true
    },
   "options_page": "options.html",
   "manifest_version": 2,
   "homepage_url": "http://aristidesfl.github.com/smoothkeyscroll/",
-  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com https://wallet.google.com https://ajax.googleapis.com https://www.google.com/uds/; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com https://www.coinbase.com/assets/button.js https://ajax.googleapis.com https://www.google.com/uds/ http://localhost:35729 http://localhost:48626/takana.js https://d37gvrvc0wt4s1.cloudfront.net/js/v1.4/rollbar.min.js https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js 'unsafe-eval'; object-src 'self'"
 }
