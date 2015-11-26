@@ -1,3 +1,6 @@
+v2.3.1
+- Fix mixpanel properties
+
 v2.3
 - Fix horizontal scrolling issue in Google Photos
 - Fix https://smashingboxes.github.io/OwlCarousel2/demos/basic.html

@@ -145,7 +145,7 @@ new Vue
 		removeTrailingZeros: (value) -> +value
 
 	methods:
-		mixpanelTrack: (event, properties) ->
+		mixpanelTrack: (event, properties={}) ->
 			return no if @mixpanel.tracked[event]
 
 			properties = _.merge(properties, {
