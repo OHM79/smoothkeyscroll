@@ -1,5 +1,6 @@
 document.addEventListener "DOMContentLoaded", (event) ->
-	mixpanel.people.set({ $created: new Date(2012, 6, 11, 12, 30, 0) })
+	mixpanel.people.set({ $created: new Date() })
+	mixpanel.track('Welcome Page Displayed')
 
 	keyDown = document.querySelectorAll(".chiclet.down.arrow.key")
 	keyLeft = document.querySelectorAll(".chiclet.left.arrow.key")

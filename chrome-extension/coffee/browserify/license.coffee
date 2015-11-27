@@ -145,8 +145,8 @@ new Vue
 		removeTrailingZeros: (value) -> +value
 
 	methods:
-		mixpanelTrack: (event, properties={}) ->
-			return no if @mixpanel.tracked[event]
+		mixpanelTrack: (eventName, properties={}) ->
+			return no if @mixpanel.tracked[eventName]
 
 			properties = _.merge(properties, {
 				'Pay: What You Want': !@isPaymentFixed
@@ -155,8 +155,8 @@ new Vue
 				'Pay: Total': @cents2dollars(@total)
 				'Pay: Split': @split
 			})
-			mixpanel.track(event, properties)
-			@mixpanel.tracked[event] = true
+			mixpanel.track(eventName, properties)
+			@mixpanel.tracked[eventName] = true
 
 		emptyCustom: -> @custom = ''
 		sliderBackground: require('./sliderBackground.coffee')
