@@ -83,7 +83,7 @@
 					<!-- <button class="button googlewallet" id="googlewalletButton" @click="pay('googlewallet')"><span class="content icon" :class="loading: UI.loading=='googlewallet'"></span><span class="content">Google Wallet</span></button> -->
 					<!-- <button class="button creditcard" id="creditcardButton" @click="pay('creditcard')"><span class="content icon" :class="loading: UI.loading=='creditcard'"></span><span class="content">Credit Card</span></button> -->
 					<div class="pay-buttons">
-						<input type="text" class="pay-email" placeholder="Email (to receive the license)" v-model="license.email" v-valid:required v-valid:email v-valid:group="paymentDetails">
+						<input type="text" class="pay-email" placeholder="Email (to receive the license)" v-model="license.email" v-valid:required v-valid:email v-valid:group="paymentDetails" @change="mixpanelTrack('Email Set')">
 						<button class="button button-pay paypal paypal-real" id="paypalButton" @click="pay('paypal')" :disabled="UI.paying">
 							<span class="content button-spinner" v-show="UI.paying == 'paypal'"></span>
 							<span class="content" v-show="UI.paying != 'paypal'">PayPal</span>

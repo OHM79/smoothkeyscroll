@@ -154,6 +154,7 @@ new Vue
 				'Pay: Price Selector': @priceSelector
 				'Pay: Total': @cents2dollars(@total)
 				'Pay: Split': @split
+				'Pay: Email': @license.email
 			})
 			mixpanel.track(eventName, properties)
 			@mixpanel.tracked[eventName] = true
