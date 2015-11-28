@@ -1,3 +1,6 @@
+v2.3.3
+- Add email to mixpanel properties
+
 v2.3.2
 - Fix Welcome Page date and tracking
 
