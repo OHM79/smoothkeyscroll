@@ -1,8 +1,14 @@
+
+if (window.location.hostname.toLowerCase().search('gphmhpfbknciemgfnfhjapilmcaecljh') < 0) {
+    var environment = 'development'; // Development
+} else {
+    var environment = 'production'; // Production
+}
 var _rollbarConfig = {
     accessToken: "285d9a0b6e224f5cac1db507e5c25a9b",
     captureUncaught: true,
     payload: {
-        environment: "production"
+        environment: environment
     },
     rollbarJsUrl: "js/vendor/rollbar.min.js"
 };
