@@ -10,6 +10,7 @@ require('velocity-animate/velocity.ui')
 animations = require("./animations.coffee")
 
 
+SERVER_URL =  'https://smoothkeyscroll.herokuapp.com'
 LICENSE =
 	email: ''
 	key: ''
@@ -202,7 +203,7 @@ new Vue
 					payform: @payform.variation
 					mixpanel_id: @mixpanel.id
 
-			$.post("https://smoothkeyscroll.herokuapp.com/coinbase", data)
+			$.post(SERVER_URL + '/coinbase', data)
 				.done (buttonCode) =>
 					@UI.paying = no
 					url = 'https://coinbase.com/checkouts/' + buttonCode
@@ -228,7 +229,7 @@ new Vue
 		verifyLicense: ->
 			@UI.verifyingLicense = yes
 			@UI.verificationFailed = no
-			$.post("https://smoothkeyscroll.herokuapp.com/license/verify", @license)
+			$.post(SERVER_URL + '/license/verify', @license)
 				.done (response) =>
 					if response is 'Valid'
 						@mutate('#section-verify-license', '#section-certificate')
