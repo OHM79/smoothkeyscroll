@@ -12,7 +12,7 @@ options =
 		Alt: 24
 		Control: 1
 		Freeze:0
-	scrollCount: 0
+	scrollCount: 1
 	licensed: false
 
 scrolling =
