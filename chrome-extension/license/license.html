@@ -53,7 +53,7 @@
 					</li>
 					<li class="step" id="stepThree">
 						<h2>3. Order your license</h2>
-						<div class="pay-buttons" @click="mixpanelTrack('Payment Button Pressed')">
+						<div class="pay-buttons">
 							<input type="text" class="pay-email" placeholder="Email (to receive the license)" v-model="license.email" v-valid:required v-valid:email v-valid:group="paymentDetails" @change="mixpanelTrack('Email Set')">
 							<button class="button button-pay paypal paypal-real" id="paypalButton" @click="pay('paypal')" :disabled="UI.paying">
 								<span class="content button-spinner" v-show="UI.paying == 'paypal'"></span>
