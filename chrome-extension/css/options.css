@@ -312,7 +312,6 @@ section {
 .pro.features.title,
 .pro.icon-lock {
     color: #8A8A8A !important;
-    /*display: none;*/
 }
 .pro.features.title { font-size: 21px; }
 .pro.icon-lock { font-size: 42px; }
@@ -958,9 +957,6 @@ h1:before {
     /*height: 0;*/
 }
 
-button#bitcoinButton {
-}
-
-#wrapper {
-    padding: 40px;
-}
+/*Fade interface in after Vue finishes loading*/
+[v-cloak] { opacity: 0; }
+.options {transition: opacity 0.5s ;}
