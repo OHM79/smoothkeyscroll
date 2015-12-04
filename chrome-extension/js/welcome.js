@@ -2,10 +2,6 @@
 (function() {
   document.addEventListener("DOMContentLoaded", function(event) {
     var cog1, cog2, cog3, cog4, cog5, cog6, hero, heroFixed, keyDown, keyLeft, keyRight, keyUp, mySequence, parallax;
-    mixpanel.people.set({
-      $created: new Date()
-    });
-    mixpanel.track('Welcome Page Displayed');
     keyDown = document.querySelectorAll(".chiclet.down.arrow.key");
     keyLeft = document.querySelectorAll(".chiclet.left.arrow.key");
     keyUp = document.querySelectorAll(".chiclet.up.arrow.key");
@@ -112,6 +108,14 @@
       return heroFixed.style.transform = "translate3d(0," + heroOffset + "px,0)";
     };
     return window.requestAnimationFrame(parallax);
+  });
+
+  window.addEventListener("load", function(event) {
+    mixpanel.people.set({
+      $created: new Date()
+    });
+    mixpanel.track('Welcome Page Displayed');
+    return chrome.runtime.setUninstallURL('https://smoothkeyscroll.herokuapp.com/uninstalled?id=' + mixpanel.get_distinct_id());
   });
 
 }).call(this);

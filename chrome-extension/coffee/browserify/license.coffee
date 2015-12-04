@@ -95,6 +95,9 @@ new Vue
 				mixpanel.identify(@mixpanel.id);
 				@mixpanelTrack('License Loaded')
 
+				# Set uninstall URL
+				chrome.runtime.setUninstallURL(SERVER_URL + '/uninstalled?id=' + @mixpanel.id)
+
 				# Track notification clicked
 				if window.location.search is '?notification'
 					@mixpanelTrack('Notification Clicked')

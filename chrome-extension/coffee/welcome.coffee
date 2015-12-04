@@ -1,7 +1,4 @@
 document.addEventListener "DOMContentLoaded", (event) ->
-	mixpanel.people.set({ $created: new Date() })
-	mixpanel.track('Welcome Page Displayed')
-
 	keyDown = document.querySelectorAll(".chiclet.down.arrow.key")
 	keyLeft = document.querySelectorAll(".chiclet.left.arrow.key")
 	keyUp = document.querySelectorAll(".chiclet.up.arrow.key")
@@ -54,3 +51,9 @@ document.addEventListener "DOMContentLoaded", (event) ->
 
 
 	window.requestAnimationFrame(parallax)
+
+window.addEventListener "load", (event) ->
+	mixpanel.people.set({ $created: new Date() })
+	mixpanel.track('Welcome Page Displayed')
+	chrome.runtime.setUninstallURL('https://smoothkeyscroll.herokuapp.com/uninstalled?id=' + mixpanel.get_distinct_id())
+
