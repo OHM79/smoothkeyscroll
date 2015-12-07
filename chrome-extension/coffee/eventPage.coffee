@@ -1,14 +1,14 @@
 chrome.runtime.onInstalled.addListener (details) ->
-    if details.reason is "install"
-        # Open welcome page
-        chrome.tabs.create({url: "welcome.html"})
+	if details.reason is "install"
+		# Open welcome page
+		chrome.tabs.create({url: "welcome.html"})
 
-        # Make extension work on all tabs without having to refresh or restart browser
-        chrome.windows.getAll (windows) ->
-            for myWindow in windows
-                chrome.tabs.getAllInWindow myWindow.id, (tabs) ->
-                    for tab in tabs
-                        chrome.tabs.executeScript(tab.id, {file: "js/content.js"});
+		# Make extension work on all tabs without having to refresh or restart browser
+		chrome.windows.getAll (windows) ->
+			for myWindow in windows
+				chrome.tabs.getAllInWindow myWindow.id, (tabs) ->
+					for tab in tabs
+						chrome.tabs.executeScript(tab.id, {file: "js/content.js"});
 
 
 chrome.runtime.onStartup.addListener () ->
