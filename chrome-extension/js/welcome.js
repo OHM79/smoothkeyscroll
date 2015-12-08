@@ -111,11 +111,15 @@
   });
 
   window.addEventListener("load", function(event) {
+    var mixpanel_id;
     mixpanel.people.set({
       $created: new Date()
     });
-    mixpanel.track('Welcome Page Displayed');
-    return chrome.runtime.setUninstallURL('https://smoothkeyscroll.herokuapp.com/uninstalled?id=' + mixpanel.get_distinct_id());
+    mixpanel_id = mixpanel.get_distinct_id();
+    mixpanel.track('Welcome Page Displayed', {
+      'Mixpanel: User ID': mixpanel_id
+    });
+    return chrome.runtime.setUninstallURL('https://smoothkeyscroll.herokuapp.com/uninstalled?id=' + mixpanel_id);
   });
 
 }).call(this);

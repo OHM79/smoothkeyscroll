@@ -92,7 +92,7 @@ new Vue
 				# Identify with Mixpanel
 				@mixpanel.id = results['mixpanel_id'] or mixpanel.get_distinct_id()
 				chrome.storage.sync.set({'mixpanel_id': @mixpanel.id})
-				mixpanel.identify(@mixpanel.id);
+				mixpanel.register({'Mixpanel: User ID': @mixpanel.id})
 				@mixpanelTrack('License Loaded')
 
 				# Set uninstall URL
@@ -181,6 +181,7 @@ new Vue
 			if @$valid('paymentDetails')
 				@[paymentMethod]()
 				mixpanel.people.set({'$email': @license.email})
+				mixpanel.identify(@mixpanel.id);
 			# hack to make email field turn red even it was not edited yet
 			# necessary because of validator.js limitations
 			$('.invalid').addClass('touched')
