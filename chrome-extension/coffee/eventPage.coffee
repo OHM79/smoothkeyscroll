@@ -20,7 +20,6 @@ chrome.runtime.onStartup.addListener () ->
 	chrome.storage.sync.get license, (results) =>
 		data = new FormData()
 		for key, value of results
-			console.log "append", key, value
 			data.append(key, value)
 		if not results.email or not results.key
 			console.log 'no details'
@@ -28,14 +27,8 @@ chrome.runtime.onStartup.addListener () ->
 		else if navigator.onLine
 			request = new XMLHttpRequest();
 			request.open('POST', 'https://smoothkeyscroll.herokuapp.com/license/verify', true);
-			request.onerror = () ->
-				console.log 'error'
-				chrome.storage.sync.set(verified: false)
-			request.onload = () ->
-				console.log 'request.responseText:', request.responseText
-				sync = {verified: request.responseText is 'Valid'}
-				console.log 'sync: ', sync
-				chrome.storage.sync.set(sync)
+			request.onerror = () -> chrome.storage.sync.set({verified: false})
+			request.onload = () -> chrome.storage.sync.set({verified: request.responseText is 'Valid'})
 			request.send(data)
 
 

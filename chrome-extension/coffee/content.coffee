@@ -13,7 +13,7 @@ options =
 		Control: 1
 		Freeze:0
 	scrollCount: 1
-	licensed: false
+	verified: false
 
 scrolling =
 	Up: no
@@ -163,10 +163,8 @@ shouldScroll = (event, direction) ->
 		#     console.log "reached end of page"
 		#     return no
 
-	if not options.licensed and options.scrollCount % 50 is 0
-		licenseLock = on
+	if not options.verified and options.scrollCount % 50 is 0
 		trialNotification()
-		delay 2000, -> licenseLock = off
 
 
 	if licenseLock is on
@@ -265,7 +263,7 @@ updateOptions = (storage) ->
 		switch option
 			when 'Alt', 'Control', 'Normal' then options.speeds[option] = parseInt(value)
 			when 'Mapping' then options.keyMap = value
-			when 'disableHover', 'scrollCount', 'licensed'
+			when 'disableHover', 'scrollCount', 'verified'
 				options[option] = value
 
 	# if options.gpuAcceleration is on then enableGPU()
@@ -302,19 +300,20 @@ window.onblur = ->
 
 
 trialNotification = ->
-	if not document.getElementById('smoothkeyscroll-notification')
-		embed = document.createElement('embed')
-		embed.type = 'text/html'
-		embed.id = 'smoothkeyscroll-notification'
-		embed.src = chrome.extension.getURL('notification.html')
-		embed.width = '320'
-		embed.height = '80'
-		embed.style.position = 'fixed'
-		embed.style.top = 0
-		embed.style.right = 0
-		embed.style.zIndex = 2147483647
-		document.body.appendChild(embed)
-
+	return no if document.getElementById('smoothkeyscroll-notification')
+	embed = document.createElement('embed')
+	embed.type = 'text/html'
+	embed.id = 'smoothkeyscroll-notification'
+	embed.src = chrome.extension.getURL('notification.html')
+	embed.width = '320'
+	embed.height = '80'
+	embed.style.position = 'fixed'
+	embed.style.top = 0
+	embed.style.right = 0
+	embed.style.zIndex = 2147483647
+	document.body.appendChild(embed)
+	licenseLock = on
+	delay 2000, -> licenseLock = off
 
 # request = new XMLHttpRequest()
 # extensionURL = chrome.extension.getURL('')
