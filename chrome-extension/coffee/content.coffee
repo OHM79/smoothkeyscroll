@@ -163,7 +163,7 @@ shouldScroll = (event, direction) ->
 		#     console.log "reached end of page"
 		#     return no
 
-	if not options.verified and options.scrollCount % 50 is 0
+	if not options.verified and options.scrollCount % 1000 is 0
 		trialNotification()
 
 
