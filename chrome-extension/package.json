@@ -22,7 +22,7 @@
     "watch:coffee": "coffee -cmw -o js/ coffee/*.coffee",
     "build:options": "browserify -t coffeeify -t partialify coffee/browserify/options.coffee | uglifyjs -c -m > dist/js/browserify/options.js",
     "build:coffee": "coffee -c -o dist/js/ coffee/*.coffee",
-    "copy:assets": "cp img/icon*.png dist/img && cp js/eventPage.js dist/js && cp js/vendor/* dist/js/vendor/",
+    "copy:assets": "cp img/icon*.png dist/img && cp js/vendor/* dist/js/vendor/",
 
     "pretest": "grep -o -r 'ngrok' .",
     "test": "node node_modules/srcy/srcy.js",
