@@ -163,9 +163,8 @@ shouldScroll = (event, direction) ->
 		#     console.log "reached end of page"
 		#     return no
 
-	if not options.verified and options.scrollCount % 1000 is 0
-		trialNotification()
-
+	# if not options.verified and options.scrollCount % 1000 is 0
+	# 	trialNotification()
 
 	if licenseLock is on
 		event.preventDefault()
