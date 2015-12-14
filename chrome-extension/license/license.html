@@ -31,7 +31,7 @@
 								<label class="fake radio ui" for="override">Custom</label>
 								<span v-show="priceSelector == 'custom'" transition>
 							<input type="text" id="override-price" size="6" v-model="custom | number" placeholder="35" v-valid:numeric v-valid:min="3" v-valid:group="paymentDetails" @change="mixpanelTrack('Price Customized')">
-							<span class="info-more info-custom" v-show="validator.custom.invalid" transition="delayed-fade">${{cents2dollars(minimum)}} minimum (buy me a coffee)</span>
+							<span class="info-more info-custom" v-show="validator.custom.invalid" transition="delayed-fade">${{cents2dollars(minimum)}} minimum (for beer)</span>
 								</span>
 							</li>
 						</ul>
