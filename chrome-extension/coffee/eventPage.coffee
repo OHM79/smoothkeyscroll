@@ -1,4 +1,6 @@
 chrome.runtime.onInstalled.addListener (details) ->
+	version = chrome.app.getDetails().version
+	mixpanel.register({'Extension: Version': version})
 	if details.reason is "install"
 		# Open welcome page
 		chrome.tabs.create({url: "welcome.html"})
@@ -17,7 +19,7 @@ chrome.runtime.onStartup.addListener () ->
 		key: ''
 		verified: false
 
-	chrome.storage.sync.get license, (results) =>
+	chrome.storage.sync.get license, (results) ->
 		data = new FormData()
 		for key, value of results
 			data.append(key, value)

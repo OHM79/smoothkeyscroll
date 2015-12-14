@@ -29,7 +29,7 @@
    ],
    "web_accessible_resources": ["options.html", "img/notification.png", "notification.html", "welcome.html"],
    "background": {
-     "scripts": ["js/vendor/intenta_background.js", "js/eventPage.js"],
+     "scripts": ["js/vendor/intenta_background.js", "js/vendor/mixpanel.js", "js/eventPage.js"],
      "persistent": true
    },
   "options_page": "options.html",
