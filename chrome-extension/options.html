@@ -36,7 +36,7 @@
 						<span class="chiclet arrow key">▼</span>
 						</span>
 						<!-- <label class="speed-label" for="Normal">Normal</label> -->
-						<input id="Normal" class="slider speed-slider" type="range" max="30" :style="{background:sliderBackground(options.Normal, 30)}" min="1" step="1" v-model="options.Normal">
+						<input id="Normal" class="slider speed-slider" type="range" max="30" :style="{background:sliderBackground(options.Normal, 30)}" min="1" step="1" v-model="options.Normal" @change="mixpanelTrack('Options Clicked', {'Option': 'Normal Speed'})">
 						<span class="speed-value" v-text="options.Normal"></span>
 						<span class="speed-value-details"> px</span>
 						<!-- <span class="speed-translation" v-text="options.Normal | speedTranslation" :style="{opacity: options.Normal | translationOpacity"}></span> -->
@@ -48,7 +48,7 @@
 						<span class="chiclet arrow key">▼</span>
 						</span>
 						<!-- <label class="speed-label" for="Alt">Reading</label> -->
-						<input id="Alt" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Alt, 30)}" v-model="options.Alt">
+						<input id="Alt" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Alt, 30)}" v-model="options.Alt" @change="mixpanelTrack('Options Clicked', {'Option': 'Alt Speed'})">
 						<span class="speed-value" v-text="options.Alt"></span>
 						<span class="speed-value-details"> px</span>
 						<!-- <span class="speed-translation" v-text="options.Alt | speedTranslation"></span> -->
@@ -61,7 +61,7 @@
 						<span class="chiclet arrow key">▼</span>
 						</span>
 						<!-- <label class="speed-label" for="Control">Skimming</label> -->
-						<input id="Control" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Control, 30)}" v-model="options.Control">
+						<input id="Control" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Control, 30)}" v-model="options.Control" @change="mixpanelTrack('Options Clicked', {'Option': 'Control Speed'})">
 						<span class="speed-value" v-text="options.Control"></span>
 						<span class="speed-value-details"> px</span>
 						<!-- <span class="speed-translation" v-text="options.Control | speedTranslation"></span> -->
@@ -69,7 +69,7 @@
 				</ul>
 			</section>
 			<!-- <div class="pro separator line"> -->
-			<!-- <span class="icon-lock pro separator text"> Pro Features</span> -->
+			<!-- <span class="icon-lock pro separator text"> Premium Features</span> -->
 			<!-- </div> -->
 			<div class="pro features container">
 				<div class="pro features subcontainer" :class="{locked: UI.proFeaturesCover && !license.verified}">
@@ -78,19 +78,19 @@
 						<ul class="list-main">
 							<li>
 								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-arrows" value="arrows">
-								<label @click="scrollToPay" class="fake radio ui" for="layout-arrows">Arrows (&#8593;&#8595;&#8592;&#8594;)</label>
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-arrows">Arrows (&#8593;&#8595;&#8592;&#8594;)</label>
 							</li>
 							<li>
 								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-vi" value="vi">
-								<label @click="scrollToPay" class="fake radio ui" for="layout-vi">Vim (HJKL)</label>
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-vi">Vim (HJKL)</label>
 							</li>
 							<li>
 								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-gamer" value="gamer">
-								<label @click="scrollToPay" class="fake radio ui" for="layout-gamer">Gamer (WASD)</label>
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-gamer">Gamer (WASD)</label>
 							</li>
 							<li>
 								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-ergo" value="ergo">
-								<label @click="scrollToPay" class="fake radio ui" for="layout-ergo">Ergonomic (IJKL)</label>
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-ergo">Ergonomic (IJKL)</label>
 							</li>
 						</ul>
 					</section>
@@ -99,7 +99,7 @@
 						<ul>
 							<li>
 								<input type="checkbox" id="option-disableHover" class="overriden checkbox input option" v-model="options.disableHover" :disabled="!license.verified">
-								<label @click="scrollToPay" class="fake checkbox ui" for="option-disableHover">Disable mouse hover effects while scrolling.</label>
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option': 'Disable Mouse Hover'})" class="fake checkbox ui" for="option-disableHover">Disable mouse hover effects while scrolling.</label>
 								<a href="#info-disable-hover" @click="showMoreInfo = !showMoreInfo" class="icon-info" :class="{open: showMoreInfo}"></a>
 								<p id="test" class="info-more" v-show="showMoreInfo" transition="slideFade">Mouse hover effects are usually unnecessary when scrolling. Disabling them can improve scrolling performance. Read more about this in these <a href="http://www.html5rocks.com/en/tutorials/speed/unnecessary-paints/#toc-combination" target="_blank">two</a> <a href="http://www.thecssninja.com/javascript/pointer-events-60fps" target="_blank">articles</a>. </a>
 								</p>
@@ -107,7 +107,7 @@
 						</ul>
 					</section>
 				</div>
-				<div v-if="UI.proFeaturesCover && !license.verified" @click="UI.proFeaturesCover=false" class="pro features cover" transition>
+				<div v-if="UI.proFeaturesCover && !license.verified" @click="mixpanelTrack('Pay: Hide Pro Cover'), UI.proFeaturesCover=false" class="pro features cover" transition>
 					<i class="pro icon-lock"></i>
 					<h1 class="pro features title" >Pro Features</h1>
 				</div>

@@ -8,17 +8,9 @@ Velocity = require('velocity-animate')
 require('velocity-animate/velocity.ui')
 # Velocity.defaults.duration = 1000
 animations = require("./animations.coffee")
-
+sharedState = require("./shared-state.coffee")
 
 SERVER_URL =  'https://smoothkeyscroll.herokuapp.com'
-LICENSE =
-	email: ''
-	key: ''
-	verified: no
-
-module.exports = LICENSE
-
-
 
 new Vue
 	el: '#module-license'
@@ -28,7 +20,7 @@ new Vue
 		custom: ''
 		minimum: 300
 		# minimum: 0
-		license: LICENSE
+		license: sharedState.license
 		priceSelector: ''
 		payform:
 			variation: '90-29-10'
@@ -68,11 +60,7 @@ new Vue
 			paying: no
 			paymentError: no
 			paymentMessage: ''
-		mixpanel:
-			tracked: {}
-			id: ''
-			notificationCount: -1
-			scrollCount: -1
+		mixpanel: sharedState.mixpanel
 
 	created: ->
 		chrome.storage.local.get 'payformVariation', (results) =>

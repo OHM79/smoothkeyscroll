@@ -2,6 +2,8 @@ delay = (ms, func) -> setTimeout(func, ms)
 Vue = require('vue')
 animations = require("./animations.coffee")
 Velocity = require('velocity-animate')
+_ = require('lodash')
+sharedState = require("./shared-state.coffee")
 
 
 
@@ -15,7 +17,8 @@ new Vue
 			'Control': 1
 			'Mapping': 'arrows'
 			'disableHover': false
-		license: require('./license.coffee')
+		license: sharedState.license
+		mixpanel: sharedState.mixpanel
 		keyboard: false
 		showMoreInfo: false
 		UI:
@@ -50,6 +53,17 @@ new Vue
 						duration: 1000
 						offset: -100
 						easing: 'easeInOutQuad'
+				@mixpanelTrack('Pay: Scroll To Pay')
+		mixpanelTrack: (eventName, customProperties={}) ->
+			eventID = eventName + JSON.stringify(customProperties)
+			return no if @mixpanel.tracked[eventID]
+
+			properties = _.merge(customProperties, {
+				'Usage: Notification Count': @mixpanel.notificationCount
+				'Usage: Scroll Count': @mixpanel.scrollCount
+			})
+			mixpanel.track(eventName, properties)
+			@mixpanel.tracked[eventID] = true
 
 
 	transitions:
@@ -76,6 +90,7 @@ new Vue
 				else
 					return 0
 
+require('./license.coffee')
 
 # 	delay 100, () -> window.scrollTo(0, 0)
 
