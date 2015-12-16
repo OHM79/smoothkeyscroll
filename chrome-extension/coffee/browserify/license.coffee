@@ -71,6 +71,8 @@ new Vue
 		mixpanel:
 			tracked: {}
 			id: ''
+			notificationCount: -1
+			scrollCount: -1
 
 	created: ->
 		chrome.storage.local.get 'payformVariation', (results) =>
@@ -85,7 +87,9 @@ new Vue
 		chrome.storage.sync.get @license, (results) =>
 			for key, value of results
 				@license[key] = value
-
+		chrome.storage.sync.get {notificationCount: -1, scrollCount: -1}, (results) =>
+			@mixpanel.notificationCount = results.notificationCount
+			@mixpanel.scrollCount = results.scrollCount
 
 		window.addEventListener 'load', =>
 			chrome.storage.sync.get 'mixpanel_id', (results) =>
@@ -159,6 +163,8 @@ new Vue
 				'Pay: Total': @cents2dollars(@total)
 				'Pay: Split': @split
 				'Pay: Email': @license.email
+				'Usage: Notification Count': @mixpanel.notificationCount
+				'Usage: Scroll Count': @mixpanel.scrollCount
 			})
 			mixpanel.track(eventName, properties)
 			@mixpanel.tracked[eventName] = true

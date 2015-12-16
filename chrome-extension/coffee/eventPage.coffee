@@ -33,9 +33,18 @@ chrome.runtime.onStartup.addListener () ->
 			request.onload = () -> chrome.storage.sync.set({verified: request.responseText is 'Valid'})
 			request.send(data)
 
-
-
-
+	chrome.storage.sync.get {scrollCount: -1, notificationCount: -1}, (results) ->
+		data = new FormData()
+		data.append('id', mixpanel.get_distinct_id())
+		data.append('scroll_count', results.scrollCount)
+		data.append('notification_count', results.notificationCount)
+		request = new XMLHttpRequest();
+		request.open('POST', 'https://smoothkeyscroll.herokuapp.com/analytics/submit', true);
+		request.send(data)
+		mixpanel.people.set({
+			scroll_count: results.scrollCount
+			notification_count: results.notificationCount
+		})
 
 agent = new IntentaAgent();
 agent.setEnv('production');

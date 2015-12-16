@@ -13,6 +13,7 @@ options =
 		Control: 1
 		Freeze:0
 	scrollCount: 1
+	notificationCount: 0
 	verified: false
 
 scrolling =
@@ -187,7 +188,7 @@ stopScrolling = (direction) ->
 	unless scrolling.anyDirection()
 		currentFrame = cancelAnimationFrame(currentFrame)
 		document.body.style.pointerEvents = '' if options.disableHover
-		chrome.storage.local.set('scrollCount': options.scrollCount)
+		chrome.storage.sync.set(scrollCount: options.scrollCount)
 
 
 move = ->
@@ -262,7 +263,7 @@ updateOptions = (storage) ->
 		switch option
 			when 'Alt', 'Control', 'Normal' then options.speeds[option] = parseInt(value)
 			when 'Mapping' then options.keyMap = value
-			when 'disableHover', 'scrollCount', 'verified'
+			when 'disableHover', 'scrollCount', 'notificationCount', 'verified'
 				options[option] = value
 
 	# if options.gpuAcceleration is on then enableGPU()
@@ -311,6 +312,8 @@ trialNotification = ->
 	embed.style.right = 0
 	embed.style.zIndex = 2147483647
 	document.body.appendChild(embed)
+	options.notificationCount += 1
+	chrome.storage.sync.set({notificationCount: options.notificationCount})
 	licenseLock = on
 	delay 2000, -> licenseLock = off
 
