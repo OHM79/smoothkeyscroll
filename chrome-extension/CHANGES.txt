@@ -1,11 +1,6 @@
-v2.3.3
-- Add email to mixpanel properties
-
-v2.3.2
-- Fix Welcome Page date and tracking
-
-v2.3.1
-- Fix mixpanel properties
+v2.4
+- Don't scroll on google search results page when blue arrow is enabled
+- Add option to disable blue arrow on google instant search
 
 v2.3
 - Fix horizontal scrolling issue in Google Photos
