@@ -80,6 +80,56 @@ button {
     top: 50%;
 }
 
+.fullscreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top:0;
+    left: 0;
+}
+
+.lightbox.wrapper {
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lightbox.background {
+    opacity: 0.8;
+    background: #D0D0D0;
+    z-index: -1;
+}
+.lightbox.content {
+    border-radius: 5px;
+    border: 5px solid white;
+    position: relative;
+    display: block;
+    font-size: 0; /*fix to remove inline spaces*/
+}
+.lightbox.close.button {
+    position: absolute;
+    top: -15px;;
+    right: -15px;
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+    background: #FFFFFF;
+}
+.lightbox.close.button:after,
+.lightbox.close.button:before {
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 14px;
+    height: 3px;
+    background: #D5D5D5;
+}
+.lightbox.close.button:after {transform: rotateZ(45deg);}
+.lightbox.close.button:before {transform: rotateZ(-45deg);}
 
 /*##############################################################################
     Inputs
@@ -272,7 +322,7 @@ section {
     border: 1px dashed silver;
     display:none;
     padding:5px 7px;
-    margin:7px 0 3px 0;
+    margin:7px 0 20px 0;
     box-sizing: initial;  /*to fix a bug from velocity.js see https://github.com/julianshapiro/velocity/issues/161#issuecomment-76569462 */
     line-height: 16px;
 }

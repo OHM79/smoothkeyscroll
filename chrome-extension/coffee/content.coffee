@@ -7,6 +7,7 @@ delay = (ms, func) -> setTimeout func, ms
 options =
 	keyMap: 'arrows'
 	disableHover: off
+	disableBlueArrow: off
 	speeds:
 		Normal: 5
 		Alt: 24
@@ -67,6 +68,7 @@ activeElement = null;
 window.scrollTargetX = null;
 window.scrollTargetY = null;
 domain = window.location.hostname
+blueArrow = null
 
 # Process all keyup and keydown events
 processKeyEvent = (event) ->
@@ -79,8 +81,7 @@ processKeyEvent = (event) ->
 			if key.isPressed
 				if scrolling[direction]
 					event.preventDefault()
-					if domain is 'mail.google.com'
-						event.stopPropagation()
+					event.stopPropagation() if shouldStopPropagation()
 				else if shouldScroll(event, direction)
 					# Prevent default so the native scroll doesn't interfere,
 					# except if the user is not yet scrolling and a modifier is pressed,
@@ -88,8 +89,7 @@ processKeyEvent = (event) ->
 					unless not scrolling.anyDirection() and currentSpeed is not 'Normal'
 						# console.log 'preventDefault'
 						event.preventDefault()
-						if domain is 'mail.google.com'
-							event.stopPropagation()
+						event.stopPropagation() if shouldStopPropagation()
 					startScrolling(direction)
 			else
 				stopScrolling(direction)
@@ -104,6 +104,10 @@ processKeyEvent = (event) ->
 			else if key.name is currentSpeed
 				currentSpeed = 'Normal'
 
+shouldStopPropagation = ->
+	return yes if domain is 'mail.google.com'
+	return yes if options.disableBlueArrow and domain.startsWith('www.google.')
+	return no # otherwise
 
 # Don't scroll if user is editing/selecting text, playing a game or something else
 shouldScroll = (event, direction) ->
@@ -114,13 +118,15 @@ shouldScroll = (event, direction) ->
 	return no if event.metaKey is on # broswer jumps to the end of page, no need to scroll
 	return no if event.shiftKey is on
 	return no if not document.hasFocus()
-	if window.location.hostname is 'mail.google.com'
+	if domain is 'mail.google.com'
 		if window.location.hash.indexOf('/') is -1
 			# console.log "gmail, don't interfere"
 			return no
 		else if event.keyCode not of keyMaps.arrows
 			return no
 			# console.log "gmail shortcuts don't interfere"
+	if domain.startsWith('www.google.') and options.disableBlueArrow is off and blueArrow
+		return no
 
 	if direction in ['Left', 'Right']
 		if not window.scrollTargetX
@@ -174,7 +180,6 @@ shouldScroll = (event, direction) ->
 	return yes
 
 startScrolling = (direction) ->
-	# trial code
 	scrolling[direction] = true
 	scrolling[oposite[direction]] = false
 	if not currentFrame
@@ -182,12 +187,14 @@ startScrolling = (direction) ->
 		document.body.style.pointerEvents = 'none' if options.disableHover
 
 
-stopScrolling = (direction) ->
-	options.scrollCount += 1
-	scrolling[direction] = false
-	unless scrolling.anyDirection()
+stopScrolling = (directions...) ->
+	wasScrolling = scrolling.anyDirection()
+	for direction in directions
+		scrolling[direction] = false
+	if wasScrolling and not scrolling.anyDirection()
 		currentFrame = cancelAnimationFrame(currentFrame)
 		document.body.style.pointerEvents = '' if options.disableHover
+		options.scrollCount += 1
 		chrome.storage.sync.set(scrollCount: options.scrollCount)
 
 
@@ -196,7 +203,6 @@ move = ->
 	amount = options.speeds[currentSpeed]
 	y = if scrolling.Down then amount else if scrolling.Up then -amount else 0
 	x = if scrolling.Right then amount else if scrolling.Left then -amount else 0
-	# window.scrollBy(x, y) if x or y
 	window.scrollTargetX.scrollLeft += x if x
 	window.scrollTargetY.scrollTop += y if y
 
@@ -263,7 +269,7 @@ updateOptions = (storage) ->
 		switch option
 			when 'Alt', 'Control', 'Normal' then options.speeds[option] = parseInt(value)
 			when 'Mapping' then options.keyMap = value
-			when 'disableHover', 'scrollCount', 'notificationCount', 'verified'
+			when 'disableBlueArrow', 'disableHover', 'scrollCount', 'notificationCount', 'verified'
 				options[option] = value
 
 	# if options.gpuAcceleration is on then enableGPU()
@@ -284,18 +290,27 @@ document.addEventListener('keyup', processKeyEvent, true)
 document.addEventListener('click', findScrollTargets, true)
 document.addEventListener('focus', findScrollTargets, true)
 
+# For preventing scroll once blue arrow is activated
+if domain.startsWith('www.google.')
+	checkForBlueArrow = (mutations) ->
+		for mutation in mutations
+			for node in mutation.addedNodes
+				if node.innerText is "►"
+					blueArrow = node
+					stopScrolling('Up', 'Down', 'Left', 'Right')
+
+	new MutationObserver(checkForBlueArrow).observe(document.body, {
+		childList: true,
+		subtree: true
+	})
+
 
 findScrollTargets()
-window.onload = -> findScrollTargets()
-
-
+window.addEventListener('load', findScrollTargets)
 
 # Stop scrolling and reset speed when user changes to a different application or tab
-window.onblur = ->
-	stopScrolling('Up')
-	stopScrolling('Down')
-	stopScrolling('Left')
-	stopScrolling('Right')
+window.addEventListener 'blur', ->
+	stopScrolling('Up', 'Down', 'Left', 'Right')
 	currentSpeed = 'Normal'
 
 

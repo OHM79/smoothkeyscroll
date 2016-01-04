@@ -25,10 +25,11 @@
 	</header>
 	<main class="main fade-down">
 		<div class="options" v-cloak>
-<!-- 			<section class="section-option">
+			<!-- 			<section class="section-option">
 				<h1 class="big title">Preferences</h1>
 			</section>
- -->			<section id="sectionSpeed" class="section-option">
+ -->
+			<section id="sectionSpeed" class="section-option">
 				<h1>Scrolling Speed</h1>
 				<ul title="Number of pixels scrolled per frame at approximately 60 frames per second">
 					<li class="speed-li">
@@ -97,12 +98,29 @@
 					<section id="sectionGPU" class="section-option hidden">
 						<h1>Advanced</h1>
 						<ul>
-							<li>
+							<li class="animation-wrapper">
 								<input type="checkbox" id="option-disableHover" class="overriden checkbox input option" v-model="options.disableHover" :disabled="!license.verified">
 								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option': 'Disable Mouse Hover'})" class="fake checkbox ui" for="option-disableHover">Disable mouse hover effects while scrolling.</label>
-								<a href="#info-disable-hover" @click="showMoreInfo = !showMoreInfo" class="icon-info" :class="{open: showMoreInfo}"></a>
-								<p id="test" class="info-more" v-show="showMoreInfo" transition="slideFade">Mouse hover effects are usually unnecessary when scrolling. Disabling them can improve scrolling performance. Read more about this in these <a href="http://www.html5rocks.com/en/tutorials/speed/unnecessary-paints/#toc-combination" target="_blank">two</a> <a href="http://www.thecssninja.com/javascript/pointer-events-60fps" target="_blank">articles</a>. </a>
+								<a href="#info-disable-hover" @click="UI.info.disableHover = !UI.info.disableHover" class="icon-info" :class="{open: UI.info.disableHover}"></a>
+								<p class="info-more" v-show="UI.info.disableHover" transition="slideFade">
+									Mouse hover effects are usually unnecessary when scrolling. Disabling them can improve scrolling performance. Read more about this in <a href="http://www.html5rocks.com/en/tutorials/speed/unnecessary-paints/#toc-combination" target="_blank">this</a> and <a href="http://www.thecssninja.com/javascript/pointer-events-60fps" target="_blank">that</a> articles.
 								</p>
+							</li>
+							<li class="animation-wrapper">
+								<input type="checkbox" id="option-disableBlueArrow" class="overriden checkbox input option" v-model="options.disableBlueArrow" :disabled="!license.verified">
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option': 'Disable Blue Arrow'})" class="fake checkbox ui" for="option-disableBlueArrow">Disable the blue arrow navigation in Google instant search.</label>
+								<a href="#info-disable-blue-arrow" @click="UI.info.disableBlueArrow = !UI.info.disableBlueArrow" class="icon-info" :class="{open: UI.info.disableBlueArrow}"></a>
+								<p class="info-more" v-show="UI.info.disableBlueArrow" transition="slideFade">
+									If you have instant results enabled in your Google search preferences, you might have experienced the <a href="" @click.prevent="UI.lightbox.blueArrow = true">blue arrow</a> which allows you to navigate search results with the keyboard. <br>
+									By default Smooth Key Scroll stays out of the way, and lets the blue arrow do its job. However if you don't like the blue arrow you can use this option to disable it and have normal scrolling instead.
+								</p>
+								<div class="fullscreen lightbox wrapper" v-if="UI.lightbox.blueArrow" transition>
+									<div class="fullscreen lightbox background" @click="UI.lightbox.blueArrow = false"></div>
+									<span class="lightbox content">
+										<img src="img/screenshot-blue-arrow.png">
+										<button class="lightbox close button" @click="UI.lightbox.blueArrow = false"></button>
+									</span>
+								</div>
 							</li>
 						</ul>
 					</section>

@@ -5,26 +5,27 @@ Velocity = require('velocity-animate')
 _ = require('lodash')
 sharedState = require("./shared-state.coffee")
 
-
-
-
 new Vue
 	el: '.options'
 	data:
 		options:  # defaults
-			'Normal': 5
-			'Alt': 24
-			'Control': 1
-			'Mapping': 'arrows'
-			'disableHover': false
+			Normal: 5
+			Alt: 24
+			Control: 1
+			Mapping: 'arrows'
+			disableHover: false
+			disableBlueArrow: false
 		license: sharedState.license
 		mixpanel: sharedState.mixpanel
 		keyboard: false
-		showMoreInfo: false
 		UI:
 			showPayment: false
 			proFeaturesCover: false
-
+			info:
+				disableHover: false
+				disableBlueArrow: false
+			lightbox:
+				blueArrow: false
 	watch:
 		'options':
 			handler: (val) -> chrome.storage.local.set(val)
