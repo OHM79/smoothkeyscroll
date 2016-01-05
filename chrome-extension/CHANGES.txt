@@ -1,3 +1,6 @@
+v2.4.1
+- Add support for iframes
+
 v2.4
 - Don't scroll on google search results page when blue arrow is enabled
 - Add option to disable blue arrow on google instant search
