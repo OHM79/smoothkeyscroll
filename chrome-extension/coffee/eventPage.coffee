@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener (details) ->
 			for myWindow in windows
 				chrome.tabs.getAllInWindow myWindow.id, (tabs) ->
 					for tab in tabs
-						chrome.tabs.executeScript(tab.id, {file: "js/content.js"});
+						chrome.tabs.executeScript(tab.id, {file: "js/content.js"}) unless tab.url.startsWith("chrome")
 
 
 chrome.runtime.onStartup.addListener () ->
