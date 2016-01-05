@@ -2,8 +2,6 @@ window.requestAnimationFrame ?= window.webkitRequestAnimationFrame
 window.cancelAnimationFrame ?= window.webkitCancelAnimationFrame
 delay = (ms, func) -> setTimeout func, ms
 
-# pointerEvents = document.body.style.pointerEvents
-
 options =
 	keyMap: 'arrows'
 	disableHover: off
@@ -60,13 +58,13 @@ keyMaps =
 		93: 'Meta'  # Chrome OSX - Right
 		92: 'Meta'  # Chrome Ubuntu - right
 
-
 currentSpeed = 'Normal'
 currentFrame = null
 licenseLock = off
 activeElement = null;
-window.scrollTargetX = null;
-window.scrollTargetY = null;
+scrollTarget =
+	vertical: null
+	horizontal: null
 domain = window.location.hostname
 blueArrow = null
 
@@ -87,7 +85,6 @@ processKeyEvent = (event) ->
 					# except if the user is not yet scrolling and a modifier is pressed,
 					# so that native browser shortcuts still work: e.g. alt + ->.
 					unless not scrolling.anyDirection() and currentSpeed is not 'Normal'
-						# console.log 'preventDefault'
 						event.preventDefault()
 						event.stopPropagation() if shouldStopPropagation()
 					startScrolling(direction)
@@ -96,7 +93,6 @@ processKeyEvent = (event) ->
 
 
 		when 'Control', 'Alt'
-			# console.log key.name
 			# while scrolling, don't let modifier keys trigger browser shortcuts
 			if scrolling.anyDirection() then event.preventDefault()
 			if key.isPressed
@@ -107,10 +103,11 @@ processKeyEvent = (event) ->
 shouldStopPropagation = ->
 	return yes if domain is 'mail.google.com'
 	return yes if options.disableBlueArrow and domain.startsWith('www.google.')
-	return no # otherwise
+	return no
 
 # Don't scroll if user is editing/selecting text, playing a game or something else
 shouldScroll = (event, direction) ->
+	debugger
 	return no if event.target.isContentEditable
 	return no if event.target.type is 'application/x-shockwave-flash'
 	return no if event.defaultPrevented
@@ -119,56 +116,23 @@ shouldScroll = (event, direction) ->
 	return no if event.shiftKey is on
 	return no if not document.hasFocus()
 	if domain is 'mail.google.com'
-		if window.location.hash.indexOf('/') is -1
-			# console.log "gmail, don't interfere"
-			return no
-		else if event.keyCode not of keyMaps.arrows
-			return no
-			# console.log "gmail shortcuts don't interfere"
-	if domain.startsWith('www.google.') and options.disableBlueArrow is off and blueArrow
-		return no
+		return no if window.location.hash.indexOf('/') is -1 # don't scroll in the inbox list, keyboard navigation already provided
+		return no if event.keyCode not of keyMaps.arrows # only scroll with proper arrow keys in order not to interfere with gmail shortcuts
+	if domain.startsWith('www.google.') and blueArrow and not options.disableBlueArrow
+		return no # don't scroll if blue arrow has been activated
+	switch direction
+		when 'Left', 'Right'
+			if not scrollTarget.horizontal
+				findScrollTarget(event, ['horizontal'])
+				return no if not scrollTarget.horizontal
+			return no if not scrollable(scrollTarget.horizontal, 'horizontal')
+			return no if domain is 'photos.google.com' # horizontal scroll breaks keyboard navigation for inidividual photos view
+		when 'Up', 'Down'
+			if not scrollTarget.vertical
+				findScrollTarget(event, ['vertical'])
+				return no if not scrollTarget.vertical
+			return no if not scrollable(scrollTarget.vertical, 'vertical')
 
-	if direction in ['Left', 'Right']
-		if not window.scrollTargetX
-			# console.log "no horizontal scrollable element"
-			findScrollTargets(event, 'x')
-			return no if not window.scrollTargetX
-		if not scrollable(window.scrollTargetX, 'x')
-			# console.log "not scrollable horizonally"
-			return no
-		if domain is 'photos.google.com'
-			# horizontal scroll breaks keyboard navigation for inidividual photos view
-			return no
-		# We will cancel this end of page code for now since it is non-essential
-		# and it is not very reliable on the document body when scrolling down
-		# else if direction is 'Left'
-		#   if scrollTarget.scrollLeft <= 0
-		#     console.log "reached end of page"
-		#     return no
-		# else if direction is 'Right'
-		#   if scrollTarget.scrollLeft >= (scrollTarget.scrollWidth - scrollTarget.clientWidth)
-		#     console.log "reached end of page"
-		#     return no
-
-	if direction in ['Up', 'Down']
-		if not window.scrollTargetY
-			# console.log "no vertical scrollable element"
-			findScrollTargets(event, 'y')
-			return no if not window.scrollTargetY
-
-		if not scrollable(window.scrollTargetY, 'y')
-			# console.log "not scrollable vertically"
-			return no
-		# We will cancel this end of page code for now since it is non-essential
-		# and it is not very reliable on the document body when scrolling down
-		# else if direction is 'Up'
-		#   if scrollTarget.scrollTop <= 0
-		#     console.log "reached end of page"
-		#     return no
-		# else if direction is 'Down'
-		#   if scrollTarget.scrollTop >= (scrollTarget.scrollHeight - scrollTarget.clientHeight)
-		#     console.log "reached end of page"
-		#     return no
 
 	# if not options.verified and options.scrollCount % 1000 is 0
 	# 	trialNotification()
@@ -186,7 +150,6 @@ startScrolling = (direction) ->
 		currentFrame = requestAnimationFrame(move)
 		document.body.style.pointerEvents = 'none' if options.disableHover
 
-
 stopScrolling = (directions...) ->
 	wasScrolling = scrolling.anyDirection()
 	for direction in directions
@@ -197,71 +160,41 @@ stopScrolling = (directions...) ->
 		options.scrollCount += 1
 		chrome.storage.sync.set(scrollCount: options.scrollCount)
 
-
 move = ->
 	currentFrame = requestAnimationFrame(move)
 	amount = options.speeds[currentSpeed]
 	y = if scrolling.Down then amount else if scrolling.Up then -amount else 0
 	x = if scrolling.Right then amount else if scrolling.Left then -amount else 0
-	window.scrollTargetX.scrollLeft += x if x
-	window.scrollTargetY.scrollTop += y if y
+	scrollTarget.horizontal.scrollLeft += x if x
+	scrollTarget.vertical.scrollTop += y if y
 
-findScrollableParent = (element, axis) ->
-	loop
-		if scrollable(element, axis)
-			return element
-		else
-			element = element.parentElement
-
-scrollable = (element, axis) ->
-	scrollAxis = if axis is 'y' then 'scrollTop' else 'scrollLeft'
-
-	if not element
-		return true
-	else if /button|input|textarea|select|embed|object/i.test element.nodeName
-		return false
-	else if element[scrollAxis] > 10
-		return true
-	else
-		initialPosition = element[scrollAxis]
-		element[scrollAxis] = 10
-		scrollVariation = element[scrollAxis]
-		element[scrollAxis] = initialPosition
-		if scrollVariation >= 10
-			return true
-	return false;
-
-findScrollTargets = (event=null, axis='both') ->
-	# if event then console.log event.type
-	# console.log document.activeElement
+findScrollTarget = (event=null, directions=['vertical', 'horizontal']) ->
 	# if activeElement is different from body, then use is,
 	if not event or document.activeElement is not document.body
-		# console.log 'activeElement:'
-		# console.log document.activeElement
 		target = document.activeElement
 	else  # otherwise use the event target
 		target = event.target or event.srcElement
 		target = if target.nodeType is 1 then target else target.parentNode;
+	for direction in directions
+		scrollTarget[direction] = findScrollableParent(target, direction) or scrollTarget[direction]
 
-	if axis is 'y' or axis is 'both'
-		scrollableParentY = findScrollableParent(target, 'y')
-		window.scrollTargetY = scrollableParentY if scrollableParentY
-		# console.log('window.scrollTargetY:')
-		# console.log(window.scrollTargetY)
+findScrollableParent = (element, direction) ->
+	loop
+		return null if not element
+		return element if scrollable(element, direction)
+		element = element.parentElement
 
-	if axis is 'x' or axis is 'both'
-		scrollableParentX = findScrollableParent(target, 'x')
-		window.scrollTargetX = scrollableParentX if scrollableParentX
-		# console.log('window.scrollTargetX:')
-		# console.log(window.scrollTargetX)
-
-
-
-# enableGPU = ->
-#   # make sure not to interfere if now trasform already exists
-#   if getComputedStyle(document.body).webkitTransform is 'none'
-#     document.body.style.webkitTransform = "translate3d(0, 0, 0)"
-
+scrollable = (element, direction) ->
+	return no if not element
+	return no if /button|input|textarea|select|embed|object/i.test element.nodeName
+	scrollProperty = if direction is 'vertical' then 'scrollTop' else 'scrollLeft'
+	return yes if element[scrollProperty] > 10
+	initialPosition = element[scrollProperty]
+	element[scrollProperty] = 10
+	newPosition = element[scrollProperty]
+	element[scrollProperty] = initialPosition
+	return yes if newPosition >= 10
+	return no
 
 updateOptions = (storage) ->
 	for option, value of storage
@@ -272,23 +205,17 @@ updateOptions = (storage) ->
 			when 'disableBlueArrow', 'disableHover', 'scrollCount', 'notificationCount', 'verified'
 				options[option] = value
 
-	# if options.gpuAcceleration is on then enableGPU()
-
-
 # Load options and update them on changes (no page reload necessary)
 if chrome.storage
 	chrome.storage.local.get(updateOptions)
 	chrome.storage.sync.get(updateOptions)
 	chrome.storage.onChanged.addListener(updateOptions)
 
-
-
-
 # Setup event listeners
 document.addEventListener('keydown', processKeyEvent, true)
 document.addEventListener('keyup', processKeyEvent, true)
-document.addEventListener('click', findScrollTargets, true)
-document.addEventListener('focus', findScrollTargets, true)
+document.addEventListener('click', findScrollTarget, true)
+document.addEventListener('focus', findScrollTarget, true)
 
 # For preventing scroll once blue arrow is activated
 if domain.startsWith('www.google.')
@@ -304,15 +231,13 @@ if domain.startsWith('www.google.')
 		subtree: true
 	})
 
-
-findScrollTargets()
-window.addEventListener('load', findScrollTargets)
+findScrollTarget()
+window.addEventListener('load', findScrollTarget)
 
 # Stop scrolling and reset speed when user changes to a different application or tab
 window.addEventListener 'blur', ->
 	stopScrolling('Up', 'Down', 'Left', 'Right')
 	currentSpeed = 'Normal'
-
 
 trialNotification = ->
 	return no if document.getElementById('smoothkeyscroll-notification')
@@ -331,35 +256,3 @@ trialNotification = ->
 	chrome.storage.sync.set({notificationCount: options.notificationCount})
 	licenseLock = on
 	delay 2000, -> licenseLock = off
-
-# request = new XMLHttpRequest()
-# extensionURL = chrome.extension.getURL('')
-# request.open("GET", extensionURL + 'notification.html', false)
-# request.send()
-# shadowHost = document.createElement('span')
-# shadowHost.id = 'smoothkeyscroll-notification'
-# shadowRoot = shadowHost.createShadowRoot()
-# shadowRoot.innerHTML = request.responseText
-
-# document.body.appendChild(shadowHost)
-
-# img = document.createElement('a')
-# img.id = 'smoothkeyscroll-notification'
-# img.src =
-# img.style.position = 'fixed'
-# # img.style.cursor = 'pointer'
-# img.background = chrome.extension.getURL('img/notification.png')
-# img.style.width = '236px'
-# img.style.height = '76px'
-# img.style.display = 'block'
-
-# img.style.top = 0
-# img.style.right = 0
-# img.style.zIndex = 2147483647
-# img.addEventListener 'click', -> document.body.removeChild(img)
-# document.body.appendChild(img)
-
-	# chrome.notifications.create('peca', NotificationOptions options, function callback)
-
-# chrome.runtime.sendMessage {greeting: "hello"}, (response) ->
-#   console.log('response received')
