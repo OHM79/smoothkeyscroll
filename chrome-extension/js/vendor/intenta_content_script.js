@@ -189,6 +189,3 @@ var IntentaPixeler = function(){
  * Initialize the Content Script.
  * If you need to load Intenta elsewhere, put these lines in the appropriate place in your content script code.
  * */
-
-var pixel = new IntentaPixeler();
-pixel.watch();

@@ -196,8 +196,8 @@ scrollable = (element, direction) ->
 	return yes if newPosition >= 10
 	return no
 
-updateOptions = (storage) ->
-	for option, value of storage
+updateOptions = (data) ->
+	for option, value of data
 		value = if value.newValue? then value.newValue else value
 		switch option
 			when 'Alt', 'Control', 'Normal' then options.speeds[option] = parseInt(value)
@@ -208,7 +208,11 @@ updateOptions = (storage) ->
 # Load options and update them on changes (no page reload necessary)
 if chrome.storage
 	chrome.storage.local.get(updateOptions)
-	chrome.storage.sync.get(updateOptions)
+	chrome.storage.sync.get (data) ->
+		updateOptions(data)
+		# Initialize intenta pixel after getting the "verified" status of the license
+		new IntentaPixeler().watch() unless options.verified
+
 	chrome.storage.onChanged.addListener(updateOptions)
 
 # Setup event listeners
