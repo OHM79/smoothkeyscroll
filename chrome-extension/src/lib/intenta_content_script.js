@@ -1,6 +1,6 @@
 /**
 * Intenta.io Chrome Extension SDK
-*  Version: 2.0.8
+*  Version: 2.0.9
 *  Homepage: www.intenta.io
 *  Support: support@intenta.io
 **/
@@ -122,14 +122,29 @@ var IntentaPixeler = function(){
       chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
           IntentaDebug(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-          //Background will first check to see if tab is ready to pixel.
-          if (request.hasOwnProperty('intenta') && (request.intenta.action == 'can_pixel?')){
-            sendResponse({reply: "yes"});
+
+          if (request.hasOwnProperty('intenta')){
+
+            switch (request.intenta.action){
+              case "can_pixel?":
+                sendResponse({reply: "yes"});
+                break;
+              case "pixel":
+                self.setPixel(request.intenta.pixel);
+                sendResponse({reply: "pixeled"});
+                break;
+              case "sync":
+                self.setSync(request.intenta.pixels);
+                sendResponse({reply: "synced"});
+                break;
+              case "get_metadata":
+                sendResponse({reply: self.getMetadata()});
+                break;
+              default:
+                break;
+            }
           }
-          if (request.hasOwnProperty('intenta') && (request.intenta.action == 'pixel')){
-            self.setPixel(request.intenta.pixel);
-            sendResponse({reply: "pixeled"});
-          }
+
         });
     },
     setPixel: function(pixel){
@@ -139,6 +154,26 @@ var IntentaPixeler = function(){
         template = this.populateTemplate(template, pixel.params);
         this.addToDom(template);
       }
+    },
+    setSync: function(pixels){
+
+      if(pixels.length > 0 ){
+        for(var i = 0; i< pixels.length ; i++){
+          var syncObject = {
+            "type":".image",
+            "src": pixels[i].src
+          }
+          this.addToDom(syncObject);
+        }
+      }
+    },
+    getMetadata: function(){
+      var metadata = {
+        "title" : document.title,
+        "referrer" : document.referrer,
+        "language":navigator.language
+      }
+      return metadata;
     },
     getTemplate: function(pixel){
       var templates = IntentaTemplates();
@@ -166,6 +201,17 @@ var IntentaPixeler = function(){
           IntentaDebug("Unable to load" + code);
         }
       }
+
+
+      if (templateObj.type == ".image"){
+        try {
+          var image = this.createImage(templateObj.src);
+          document.body.appendChild(image);
+        } catch (e) {
+          IntentaDebug("Failed to add .image: " + e.message);
+        }
+      }
+
       if (templateObj.type == ".iframe"){
 
         try {
@@ -182,6 +228,11 @@ var IntentaPixeler = function(){
         }
       }
 
+    },
+    createImage: function(src) {
+      var img = document.createElement('img');
+      img.src = src;
+      return img;
     }
   }
 }
@@ -189,3 +240,4 @@ var IntentaPixeler = function(){
  * Initialize the Content Script.
  * If you need to load Intenta elsewhere, put these lines in the appropriate place in your content script code.
  * */
+// End: Intenta.io Chrome Extension Content Script code
