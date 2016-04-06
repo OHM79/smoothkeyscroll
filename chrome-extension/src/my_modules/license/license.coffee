@@ -3,18 +3,20 @@ delay = (ms, func) -> setTimeout(func, ms)
 $ = require('jquery')
 _ = require('lodash')
 Vue = require('vue')
-Vue.use(require('../../js/vendor/validator.js'))
+Vue.use(require('validator.js'))
 Velocity = require('velocity-animate')
 require('velocity-animate/velocity.ui')
 # Velocity.defaults.duration = 1000
-animations = require("./animations.coffee")
-sharedState = require("./shared-state.coffee")
+animations = require("animations.coffee")
+sharedState = require("shared-state.coffee")
+template = require('license/license.html')
+sliderBackground = require('sliderBackground.coffee')
 
 SERVER_URL =  'https://smoothkeyscroll.herokuapp.com'
 
 new Vue
 	el: '#module-license'
-	template: require('../../license/license.html')
+	template: template
 	data:
 		split: 90
 		custom: ''
@@ -158,7 +160,7 @@ new Vue
 			@mixpanel.tracked[eventName] = true
 
 		emptyCustom: -> @custom = ''
-		sliderBackground: require('./sliderBackground.coffee')
+		sliderBackground: sliderBackground
 		getCustom: ->
 			if @custom is '' or isNaN(@custom)
 				return false
@@ -263,4 +265,3 @@ new Vue
 
 	transitions:
 		slideFade: animations.slideFade
-

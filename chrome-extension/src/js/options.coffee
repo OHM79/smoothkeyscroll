@@ -1,9 +1,10 @@
 delay = (ms, func) -> setTimeout(func, ms)
 Vue = require('vue')
-animations = require("./animations.coffee")
+animations = require('animations.coffee')
 Velocity = require('velocity-animate')
 _ = require('lodash')
-sharedState = require("./shared-state.coffee")
+sharedState = require('shared-state.coffee')
+sliderBackground = require('sliderBackground.coffee')
 
 new Vue
 	el: '.options'
@@ -38,7 +39,7 @@ new Vue
 			if 'verified' in changes
 				@verified = changes['verified'].newValue
 	methods:
-		sliderBackground: require('./sliderBackground.coffee')
+		sliderBackground: sliderBackground
 		scrollToPay: () ->
 			if @license.verified
 				@UI.proFeaturesCover = false
@@ -91,7 +92,7 @@ new Vue
 				else
 					return 0
 
-require('./license.coffee')
+require('license/license.coffee')
 
 # 	delay 100, () -> window.scrollTo(0, 0)
 

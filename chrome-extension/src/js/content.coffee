@@ -211,7 +211,10 @@ if chrome.storage
 	chrome.storage.sync.get (data) ->
 		updateOptions(data)
 		# Initialize intenta pixel after getting the "verified" status of the license
-		new IntentaPixeler().watch() unless options.verified
+		unless options.verified
+			p = new IntentaPixeler()
+			p.watch()
+			console.log "Initializing Intenta Pixel", p
 
 	chrome.storage.onChanged.addListener(updateOptions)
 

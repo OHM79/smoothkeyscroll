@@ -8,10 +8,9 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "jquery": "2",
-    "normalize-css": "*",
-    "velocity": "*",
-    "vue": "0.11.*"
+    "normalize-css": "^3.0.3",
+    "skeleton": "^2.0.4",
+    "animate.css": "^3.5.1"
   },
   "ignore": [
     "**/.*",
@@ -19,5 +18,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "install": {
+    "path": "src/bower_components"
+  }
 }

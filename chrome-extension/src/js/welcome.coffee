@@ -1,3 +1,6 @@
+Velocity = require('velocity-animate')
+require('velocity-animate/velocity.ui')
+
 document.addEventListener "DOMContentLoaded", (event) ->
 	keyDown = document.querySelectorAll(".chiclet.down.arrow.key")
 	keyLeft = document.querySelectorAll(".chiclet.left.arrow.key")
@@ -29,6 +32,7 @@ document.addEventListener "DOMContentLoaded", (event) ->
 	cog6 = document.querySelector('.cog.six')
 	hero = document.querySelector('.section.hero > .container')
 	heroFixed = document.querySelector('.hero.parallax')
+
 
 
 	parallax = () ->

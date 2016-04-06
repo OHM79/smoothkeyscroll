@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "",
+  "private": true,
   "dependencies": {
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
@@ -10,27 +11,39 @@
     "vue": "1.0.0-alpha.7"
   },
   "devDependencies": {
+    "autoprefixer": "^6.3.3",
+    "bower": "^1.7.7",
+    "bower-installer": "^1.2.0",
     "coffeeify": "^1.1.0",
+    "cssnano": "^3.5.2",
+    "exorcist": "^0.4.0",
+    "globify": "^1.2.1",
+    "minifyify": "^7.3.2",
     "parallelshell": "^2.0.0",
     "partialify": "^3.1.3",
+    "postcss": "^5.0.17",
+    "postcss-cli": "^2.5.1",
     "srcy": "^0.4.3",
     "uglifyjs": "^2.4.10"
   },
   "scripts": {
+    "postinstall": "bower install && bower-installer -pr",
     "start": "npm run dev",
-    "dev": "parallelshell 'npm run watch:options' 'npm run watch:coffee'",
-    "watch:options": "watchify -v -d -t coffeeify -t partialify -e coffee/browserify/options.coffee -o js/browserify/options.js",
-    "watch:coffee": "coffee -cmw -o js/ coffee/*.coffee",
-    "build:options": "browserify -t coffeeify -t partialify coffee/browserify/options.coffee | uglifyjs -c -m > dist/js/browserify/options.js",
-    "build:coffee": "coffee -c -o dist/js/ coffee/*.coffee",
-    "copy:assets": "cp img/icon*.png dist/img && cp js/vendor/* dist/js/vendor/",
-    "pretest": "grep -o -r 'ngrok' .",
-    "test": "node node_modules/srcy/srcy.js",
+    "dev": "globify 'src/js/*.coffee' --debug --watch -v --outfile 'src/js/*.js'",
+    "prebuild": "npm run clean && cp -R src dist",
+    "build": "cd dist/js/ && for f in *.coffee; do f=${f%%.*}; cross-env NODE_ENV=production browserify ${f}.coffee --debug | exorcist ${f}.js.map > ${f}.js && uglifyjs ${f}.js -c warnings=false -m --in-source-map ${f}.js.map --source-map ${f}.js.map -o ${f}.js; done",
+    "postbuild": "rm -rf dist/node_modules dist/my_modules && rm dist/**/*.coffee && npm run postcss",
+    "minifyify": "cd src/js/ && browserify welcome.coffee --debug -p [minifyify --output welcome.js.map --uglify [--compress]] > welcome.js",
     "clean": "rm -rf dist",
-    "stripquery": "find dist -name \"*\\?*\" -exec bash -c 'for file do mv \"$file\" \"${file%%\\?*}\"; done' _ {} +",
-    "prebuild": "python -m SimpleHTTPServer & echo $! > http-server.pid & sleep 0.2",
-    "build": "npm run clean && wget 'http://0.0.0.0:8000/options.html' 'http://0.0.0.0:8000/welcome.html' 'http://0.0.0.0:8000/notification.html' 'http://0.0.0.0:8000/manifest.json' --mirror -nH -P dist || true",
-    "postbuild": "npm run stripquery && kill $(< http-server.pid) && rm http-server.pid && npm run build:options && npm run build:coffee && npm run copy:assets"
+    "postcss": "postcss --use autoprefixer --use cssnano --no-cssnano.discardUnused --replace dist/css/*.css dist/bower_components/**/*.css",
+    "pretest": "grep -o -r 'ngrok' .",
+    "test": "node node_modules/srcy/srcy.js"
+  },
+  "browserify": {
+    "transform": [
+      "coffeeify",
+      "partialify"
+    ]
   },
   "author": "",
   "license": "ISC"
