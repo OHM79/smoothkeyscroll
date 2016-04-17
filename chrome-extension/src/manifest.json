@@ -14,7 +14,7 @@
       "exclude_matches":["*://aristidesfl.github.com/smoothkeyscroll*"],
       "js": ["lib/intenta_content_script.js", "js/content.js"],
       "all_frames": true,
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ],
   "permissions": [
