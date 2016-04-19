@@ -107,7 +107,6 @@ shouldStopPropagation = ->
 
 # Don't scroll if user is editing/selecting text, playing a game or something else
 shouldScroll = (event, direction) ->
-	debugger
 	return no if event.target.isContentEditable
 	return no if event.target.type is 'application/x-shockwave-flash'
 	return no if event.defaultPrevented
