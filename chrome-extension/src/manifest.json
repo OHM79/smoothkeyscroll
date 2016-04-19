@@ -12,7 +12,7 @@
     {
       "matches": ["<all_urls>"],
       "exclude_matches":["*://aristidesfl.github.com/smoothkeyscroll*"],
-      "js": ["lib/intenta_content_script.js", "js/content.js"],
+      "js": ["js/content.js"],
       "all_frames": true,
       "run_at": "document_start"
     }
@@ -21,16 +21,13 @@
      "storage",
      "alarms",
      "tabs",
-     "cookies",
-     "webRequest",
-     "webRequestBlocking",
      "http://*/",
      "https://*/"
    ],
    "web_accessible_resources": ["options.html", "img/notification.png", "notification.html", "welcome.html"],
    "background": {
-     "scripts": ["lib/intenta_background.js", "lib/mixpanel.js", "js/eventPage.js"],
-     "persistent": true
+     "scripts": ["lib/mixpanel.js", "js/eventPage.js"],
+     "persistent": false
    },
   "options_page": "options.html",
   "manifest_version": 2,

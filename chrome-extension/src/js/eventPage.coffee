@@ -22,18 +22,16 @@ initialize = ->
 	chrome.storage.sync.get license, (results) ->
 		license = results
 		if not license.email or not license.key # No license data
-			updateLicenseAndContinue(false)
+			setLicense(false)
 		else if navigator.onLine # Contact server and check if license if valid
 			data = new FormData()
 			data.append('email', license.email)
 			data.append('key', license.key)
 			request = new XMLHttpRequest();
 			request.open('POST', 'https://smoothkeyscroll.herokuapp.com/license/verify', true);
-			request.onerror = -> updateLicenseAndContinue(false)
-			request.onload = -> updateLicenseAndContinue(request.responseText is 'Valid')
+			request.onerror = -> setLicense(false)
+			request.onload = -> setLicense(request.responseText is 'Valid')
 			request.send(data)
-		else # Offline, proced with stored license data
-			initializeIntenta()
 
 	# Report usage statistics
 	chrome.storage.sync.get {scrollCount: -1, notificationCount: -1}, (results) ->
@@ -49,17 +47,9 @@ initialize = ->
 			notification_count: results.notificationCount
 		})
 
-	updateLicenseAndContinue = (verified) ->
+	setLicense = (verified) ->
 		license.verified = verified
 		chrome.storage.sync.set(license)
-		initializeIntenta()
-
-	initializeIntenta = ->
-		return no if license.verified # Don't use intenta on licensed users
-		agent = new IntentaAgent()
-		agent.setEnv('production')
-		agent.setToken('BWEATVykfSpY7JyyA1j8tA')
-		agent.run()
 
 chrome.runtime.onInstalled.addListener(install)
 chrome.runtime.onInstalled.addListener(initialize)

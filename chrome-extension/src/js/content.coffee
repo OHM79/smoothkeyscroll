@@ -208,14 +208,7 @@ updateOptions = (data) ->
 # Load options and update them on changes (no page reload necessary)
 if chrome.storage
 	chrome.storage.local.get(updateOptions)
-	chrome.storage.sync.get (data) ->
-		updateOptions(data)
-		# Initialize intenta pixel after getting the "verified" status of the license
-		unless options.verified or window.location.protocol is 'chrome-extension:'
-			p = new IntentaPixeler()
-			p.watch()
-			console.log "Initializing Intenta Pixel", p
-
+	chrome.storage.sync.get(updateOptions)
 	chrome.storage.onChanged.addListener(updateOptions)
 
 # Setup event listeners
