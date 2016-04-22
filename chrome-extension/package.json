@@ -29,7 +29,7 @@
   "scripts": {
     "postinstall": "bower install && bower-installer -pr",
     "start": "npm run dev",
-    "dev": "globify 'src/js/*.coffee' --debug --watch -v --outfile 'src/js/*.js'",
+    "dev": "globify 'src/js/*.coffee' --debug --watch --verbose --outfile 'src/js/*.js'",
     "prebuild": "npm run clean && cp -R src dist",
     "build": "cd dist/js/ && for f in *.coffee; do f=${f%%.*}; cross-env NODE_ENV=production browserify ${f}.coffee | uglifyjs -c warnings=false -m > ${f}.js; done",
     "build:withsourcemaps": "cd dist/js/ && for f in *.coffee; do f=${f%%.*}; cross-env NODE_ENV=production browserify ${f}.coffee --debug | exorcist ${f}.js.map > ${f}.js && uglifyjs ${f}.js -c warnings=false -m --in-source-map ${f}.js.map --source-map ${f}.js.map -o ${f}.js; done",
@@ -38,7 +38,8 @@
     "clean": "rm -rf dist",
     "postcss": "postcss --use autoprefixer --use cssnano --no-cssnano.discardUnused --replace dist/css/*.css dist/bower_components/**/*.css",
     "pretest": "grep -o -r 'ngrok' .",
-    "test": "node node_modules/srcy/srcy.js"
+    "test": "node node_modules/srcy/srcy.js",
+    "release": "zip -r releases/v$npm_package_version.zip dist"
   },
   "browserify": {
     "transform": [
