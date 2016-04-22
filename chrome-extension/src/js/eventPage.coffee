@@ -3,6 +3,9 @@ install = (details) ->
 		# Open welcome page
 		chrome.tabs.create({url: "welcome.html"})
 
+		# Track new install
+		mixpanel.track('Install')
+
 		# Make extension work on all tabs without having to refresh or restart browser
 		chrome.windows.getAll (windows) ->
 			for myWindow in windows
@@ -51,6 +54,6 @@ initialize = ->
 		license.verified = verified
 		chrome.storage.sync.set(license)
 
-chrome.runtime.onInstalled.addListener(install)
 chrome.runtime.onInstalled.addListener(initialize)
 chrome.runtime.onStartup.addListener(initialize)
+chrome.runtime.onInstalled.addListener(install)
