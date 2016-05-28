@@ -176,6 +176,7 @@ findScrollTarget = (event=null, directions=['vertical', 'horizontal']) ->
 		target = if target.nodeType is 1 then target else target.parentNode;
 	for direction in directions
 		scrollTarget[direction] = findScrollableParent(target, direction) or scrollTarget[direction]
+		console.log("scroollTarget#{direction}:", scrollTarget[direction])
 
 findScrollableParent = (element, direction) ->
 	loop
@@ -186,14 +187,15 @@ findScrollableParent = (element, direction) ->
 scrollable = (element, direction) ->
 	return no if not element
 	return no if /button|input|textarea|select|embed|object/i.test element.nodeName
-	scrollProperty = if direction is 'vertical' then 'scrollTop' else 'scrollLeft'
-	return yes if element[scrollProperty] > 10
-	initialPosition = element[scrollProperty]
-	element[scrollProperty] = 10
-	newPosition = element[scrollProperty]
-	element[scrollProperty] = initialPosition
-	return yes if newPosition >= 10
-	return no
+	scrollProp = if direction is 'vertical' then 'scrollTop' else 'scrollLeft'
+	return yes if element[scrollProp] > 10
+	scrollDimensionProp = if direction is 'vertical' then 'scrollHeight' else 'scrollWidth'
+	clientDimensionProp = if direction is 'vertical' then 'clientHeight' else 'clientWidth'
+	overflowProp = if direction is 'vertical' then 'overflowY' else 'overflowX'
+	overflow = window.getComputedStyle(element)[overflowProp].toLowerCase()
+	isRoot = element in [document.body, document.documentElement]
+	return no if not isRoot and overflow in ['visible', 'hidden']
+	return (element[scrollDimensionProp] > element[clientDimensionProp])
 
 updateOptions = (data) ->
 	for option, value of data
