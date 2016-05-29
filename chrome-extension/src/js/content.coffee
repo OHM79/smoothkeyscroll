@@ -58,6 +58,13 @@ keyMaps =
 		93: 'Meta'  # Chrome OSX - Right
 		92: 'Meta'  # Chrome Ubuntu - right
 
+props =
+	realSize: {vertical: 'scrollHeight', horizontal: 'scrollWidth'}
+	visibleSize: {vertical: 'clientHeight', horizontal: 'clientWidth'}
+	scroll: {vertical: 'scrollTop', horizontal: 'scrollLeft'}
+	overflow: {vertical: 'overflowY', horizontal: 'overflowX'}
+	windowSize: {vertical: 'innerHeight', horizontal: 'innerWidth'}
+
 currentSpeed = 'Normal'
 currentFrame = null
 licenseLock = off
@@ -167,35 +174,37 @@ move = ->
 	scrollTarget.horizontal.scrollLeft += x if x
 	scrollTarget.vertical.scrollTop += y if y
 
-findScrollTarget = (event=null, directions=['vertical', 'horizontal']) ->
+findScrollTarget = (event=null, axis=['vertical', 'horizontal']) ->
 	# if activeElement is different from body, then use is,
 	if not event or document.activeElement is not document.body
 		target = document.activeElement
 	else  # otherwise use the event target
 		target = event.target or event.srcElement
 		target = if target.nodeType is 1 then target else target.parentNode;
-	for direction in directions
-		scrollTarget[direction] = findScrollableParent(target, direction) or scrollTarget[direction]
-		console.log("scroollTarget#{direction}:", scrollTarget[direction])
+	for ax in axis
+		scrollTarget[ax] = findScrollableParent(target, ax) or scrollTarget[ax]
 
-findScrollableParent = (element, direction) ->
+findScrollableParent = (element, axis) ->
 	loop
 		return null if not element
-		return element if scrollable(element, direction)
+		return element if scrollable(element, axis)
 		element = element.parentElement
 
-scrollable = (element, direction) ->
+scrollable = (element, axis) ->
 	return no if not element
 	return no if /button|input|textarea|select|embed|object/i.test element.nodeName
-	scrollProp = if direction is 'vertical' then 'scrollTop' else 'scrollLeft'
-	return yes if element[scrollProp] > 10
-	scrollDimensionProp = if direction is 'vertical' then 'scrollHeight' else 'scrollWidth'
-	clientDimensionProp = if direction is 'vertical' then 'clientHeight' else 'clientWidth'
-	overflowProp = if direction is 'vertical' then 'overflowY' else 'overflowX'
-	overflow = window.getComputedStyle(element)[overflowProp].toLowerCase()
-	isRoot = element in [document.body, document.documentElement]
-	return no if not isRoot and overflow in ['visible', 'hidden']
-	return (element[scrollDimensionProp] > element[clientDimensionProp])
+	return no if element is document.documentElement
+	return yes if element[props.scroll[axis]] > 10
+	if element is document.body then return bodyScrollable(axis)
+	return (element[props.realSize[axis]] > element[props.visibleSize[axis]])
+
+bodyScrollable = (axis) ->
+	overflow = window.getComputedStyle(document.body)[props.overflow[axis]].toLowerCase()
+	rootOverflow = window.getComputedStyle(document.documentElement)[props.overflow[axis]].toLowerCase()
+	return no if rootOverflow is 'hidden'
+	return no if rootOverflow is 'visible' and overflow is 'hidden'
+	return document.body[props.realSize[axis]] > window[props.windowSize[axis]]
+
 
 updateOptions = (data) ->
 	for option, value of data
