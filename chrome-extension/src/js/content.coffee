@@ -15,7 +15,7 @@ options =
 	notificationCount: 0
 	verified: false
 
-scrolling =
+isScrolling =
 	Up: no
 	Down: no
 	Left: no
@@ -84,14 +84,14 @@ processKeyEvent = (event) ->
 		when 'Up', 'Down', 'Left', 'Right'
 			direction = key.name
 			if key.isPressed
-				if scrolling[direction]
+				if isScrolling[direction]
 					event.preventDefault()
 					event.stopPropagation() if shouldStopPropagation()
 				else if shouldScroll(event, direction)
 					# Prevent default so the native scroll doesn't interfere,
 					# except if the user is not yet scrolling and a modifier is pressed,
 					# so that native browser shortcuts still work: e.g. alt + ->.
-					unless not scrolling.anyDirection() and currentSpeed is not 'Normal'
+					unless not isScrolling.anyDirection() and currentSpeed is not 'Normal'
 						event.preventDefault()
 						event.stopPropagation() if shouldStopPropagation()
 					startScrolling(direction)
@@ -101,7 +101,7 @@ processKeyEvent = (event) ->
 
 		when 'Control', 'Alt'
 			# while scrolling, don't let modifier keys trigger browser shortcuts
-			if scrolling.anyDirection() then event.preventDefault()
+			if isScrolling.anyDirection() then event.preventDefault()
 			if key.isPressed
 				currentSpeed = key.name
 			else if key.name is currentSpeed
@@ -150,17 +150,17 @@ shouldScroll = (event, direction) ->
 	return yes
 
 startScrolling = (direction) ->
-	scrolling[direction] = true
-	scrolling[oposite[direction]] = false
+	isScrolling[direction] = true
+	isScrolling[oposite[direction]] = false
 	if not currentFrame
 		currentFrame = requestAnimationFrame(move)
 		document.body.style.pointerEvents = 'none' if options.disableHover
 
 stopScrolling = (directions...) ->
-	wasScrolling = scrolling.anyDirection()
+	wasScrolling = isScrolling.anyDirection()
 	for direction in directions
-		scrolling[direction] = false
-	if wasScrolling and not scrolling.anyDirection()
+		isScrolling[direction] = false
+	if wasScrolling and not isScrolling.anyDirection()
 		currentFrame = cancelAnimationFrame(currentFrame)
 		document.body.style.pointerEvents = '' if options.disableHover
 		options.scrollCount += 1
@@ -169,8 +169,8 @@ stopScrolling = (directions...) ->
 move = ->
 	currentFrame = requestAnimationFrame(move)
 	amount = options.speeds[currentSpeed]
-	y = if scrolling.Down then amount else if scrolling.Up then -amount else 0
-	x = if scrolling.Right then amount else if scrolling.Left then -amount else 0
+	y = if isScrolling.Down then amount else if isScrolling.Up then -amount else 0
+	x = if isScrolling.Right then amount else if isScrolling.Left then -amount else 0
 	scrollTarget.horizontal.scrollLeft += x if x
 	scrollTarget.vertical.scrollTop += y if y
 
