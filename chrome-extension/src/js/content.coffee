@@ -131,13 +131,13 @@ shouldScroll = (event, direction) ->
 			if not scrollTarget.horizontal
 				findScrollTarget(event, ['horizontal'])
 				return no if not scrollTarget.horizontal
-			return no if not scrollable(scrollTarget.horizontal, 'horizontal')
+			return no if not isScrollable(scrollTarget.horizontal, 'horizontal')
 			return no if domain is 'photos.google.com' # horizontal scroll breaks keyboard navigation for inidividual photos view
 		when 'Up', 'Down'
 			if not scrollTarget.vertical
 				findScrollTarget(event, ['vertical'])
 				return no if not scrollTarget.vertical
-			return no if not scrollable(scrollTarget.vertical, 'vertical')
+			return no if not isScrollable(scrollTarget.vertical, 'vertical')
 
 
 	# if not options.verified and options.scrollCount % 1000 is 0
@@ -187,18 +187,28 @@ findScrollTarget = (event=null, axis=['vertical', 'horizontal']) ->
 findScrollableParent = (element, axis) ->
 	loop
 		return null if not element
-		return element if scrollable(element, axis)
+		return element if isScrollable(element, axis)
 		element = element.parentElement
 
-scrollable = (element, axis) ->
+findScrollableChild = (element) ->
+	scrollableChild = null
+	for child in element.getElementsByTagName("*")
+		if isScrollable(child, 'vertical')
+			if not scrollableChild or child.scrollHeight > scrollableChild.scrollHeight
+				scrollableChild = child
+
+	return scrollableChild
+
+isScrollable = (element, axis='vertical') ->
 	return no if not element
 	return no if /button|input|textarea|select|embed|object/i.test element.nodeName
 	return no if element is document.documentElement
 	return yes if element[props.scroll[axis]] > 10
-	if element is document.body then return bodyScrollable(axis)
+	if element is document.body then return isBodyScrollable(axis)
+	return no if window.getComputedStyle(element)[props.overflow[axis]].toLowerCase() in ['visible', 'hidden']
 	return (element[props.realSize[axis]] > element[props.visibleSize[axis]])
 
-bodyScrollable = (axis) ->
+isBodyScrollable = (axis) ->
 	overflow = window.getComputedStyle(document.body)[props.overflow[axis]].toLowerCase()
 	rootOverflow = window.getComputedStyle(document.documentElement)[props.overflow[axis]].toLowerCase()
 	return no if rootOverflow is 'hidden'
@@ -242,7 +252,15 @@ if domain.startsWith('www.google.')
 	})
 
 findScrollTarget()
-window.addEventListener('load', findScrollTarget)
+window.addEventListener 'load', =>
+	findScrollTarget()
+	# If no vertical scrollTarget was found, search all nodes (for pages with atypical scrolling)
+	if not scrollTarget.vertical
+		scrollTarget.vertical = findScrollableChild(document)
+	if not scrollTarget.vertical # some pages didn't finish render on load so wait a second
+		delay 1000, -> scrollTarget.vertical = findScrollableChild(document)
+
+
 
 # Stop scrolling and reset speed when user changes to a different application or tab
 window.addEventListener 'blur', ->
