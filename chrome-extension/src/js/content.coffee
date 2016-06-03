@@ -174,15 +174,15 @@ move = ->
 	scrollTarget.horizontal.scrollLeft += x if x
 	scrollTarget.vertical.scrollTop += y if y
 
-findScrollTarget = (event=null, axis=['vertical', 'horizontal']) ->
+findScrollTarget = (event=null, axes=['vertical', 'horizontal']) ->
 	# if activeElement is different from body, then use is,
 	if not event or document.activeElement is not document.body
 		target = document.activeElement
 	else  # otherwise use the event target
 		target = event.target or event.srcElement
 		target = if target.nodeType is 1 then target else target.parentNode;
-	for ax in axis
-		scrollTarget[ax] = findScrollableParent(target, ax) or scrollTarget[ax]
+	for axis in axes
+		scrollTarget[axis] = findScrollableParent(target, axis) or scrollTarget[axis]
 
 findScrollableParent = (element, axis) ->
 	loop
