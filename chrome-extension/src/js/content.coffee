@@ -164,7 +164,7 @@ stopScrolling = (directions...) ->
 		currentFrame = cancelAnimationFrame(currentFrame)
 		document.body.style.pointerEvents = '' if options.disableHover
 		options.scrollCount += 1
-		chrome.storage.sync.set(scrollCount: options.scrollCount)
+		chrome?.storage?.sync.set(scrollCount: options.scrollCount)
 
 move = ->
 	currentFrame = requestAnimationFrame(move)
@@ -226,7 +226,7 @@ updateOptions = (data) ->
 				options[option] = value
 
 # Load options and update them on changes (no page reload necessary)
-if chrome.storage
+if chrome?.storage?
 	chrome.storage.local.get(updateOptions)
 	chrome.storage.sync.get(updateOptions)
 	chrome.storage.onChanged.addListener(updateOptions)
@@ -272,7 +272,7 @@ trialNotification = ->
 	embed = document.createElement('embed')
 	embed.type = 'text/html'
 	embed.id = 'smoothkeyscroll-notification'
-	embed.src = chrome.extension.getURL('notification.html')
+	embed.src = chrome?.extension?.getURL('notification.html')
 	embed.width = '320'
 	embed.height = '80'
 	embed.style.position = 'fixed'
@@ -281,6 +281,6 @@ trialNotification = ->
 	embed.style.zIndex = 2147483647
 	document.body.appendChild(embed)
 	options.notificationCount += 1
-	chrome.storage.sync.set({notificationCount: options.notificationCount})
+	chrome?.storage?.sync.set({notificationCount: options.notificationCount})
 	licenseLock = on
 	delay 2000, -> licenseLock = off

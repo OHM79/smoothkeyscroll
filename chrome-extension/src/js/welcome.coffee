@@ -60,5 +60,5 @@ window.addEventListener "load", (event) ->
 	mixpanel.people.set({ $created: new Date() })
 	mixpanel_id = mixpanel.get_distinct_id()
 	mixpanel.track('Welcome Page Displayed', {'Mixpanel: User ID': mixpanel_id})
-	chrome.runtime.setUninstallURL('https://smoothkeyscroll.herokuapp.com/uninstalled?id=' + mixpanel_id)
+	chrome?.runtime?.setUninstallURL?('https://smoothkeyscroll.herokuapp.com/uninstalled?id=' + mixpanel_id)
 
