@@ -1,2 +1,8 @@
 dist/
+src/**/*.map
+src/**/content.js
+src/**/options.js
+src/**/eventPage.js
+src/**/bower_components/
+
 
