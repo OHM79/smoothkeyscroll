@@ -1,6 +1,6 @@
-image: node:5
-
 pages:
+  stage: deploy
+  image: node:5
   cache:
     paths:
     - chrome-extension/node_modules/
