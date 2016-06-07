@@ -25,7 +25,7 @@
     "uglifyjs": "^2.4.10"
   },
   "scripts": {
-    "postinstall": "bower install && bower-installer -pr",
+    "postinstall": "bower install --allow-root && bower-installer -pr",
     "start": "npm run dev",
     "dev": "globify 'src/js/*.coffee' --debug --watch --verbose --outfile 'src/js/*.js'",
     "prebuild": "npm run clean && cp -R src dist",

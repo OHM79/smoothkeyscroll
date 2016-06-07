@@ -1,0 +1,16 @@
+image: node:5
+
+pages:
+  cache:
+    paths:
+    - chrome-extension/node_modules/
+  script:
+  - cd chrome-extension
+  - npm install --unsafe-perm
+  - npm run build
+  - cp -r dist/ ../public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
