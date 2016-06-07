@@ -1,0 +1,49 @@
+v2.4.1
+- Add support for iframes
+
+v2.4
+- Don't scroll on google search results page when blue arrow is enabled
+- Add option to disable blue arrow on google instant search
+
+v2.3
+- Fix horizontal scrolling issue in Google Photos
+- Fix https://smashingboxes.github.io/OwlCarousel2/demos/basic.html
+
+v2.2
+- Improve scrolling engine to allow scroll in gmail, vk.com, etc..
+- Improve scrolling performance by removing scroll check on every key repeat
+
+v2.1
+- Fix scroll locking when usind find/search in page.
+	Currently the only solution is to scroll normally when searching
+	When google fixes this issue we may be able to re-enable smooth scroll:
+	https://code.google.com/p/chromium/issues/detail?id=529050&thanks=529050&ts=1441646441
+- Fix rare ocasion when smooth scroll would not activate after pressing the shift key in a shortcut
+
+v2.0
+- Complete re-write
+- Alternative directional keys (Vim, Gamer, Ergonomic)
+- Options to prevent hover effects while scrolling
+
+v1.0.6
+- Fix Ctrl and Alt keys on Linux
+
+v1.0.5
+- Fix page not scrolling in Chrome 40
+
+v1.0.4
+- Selecting text with Shift is now possible anywhere on the page
+- Fix alt and ctrl speed sliders regression (options page)
+
+v1.0.3
+- Fix alt-left/right functionality on windows (and other default shortcuts)
+- Allow alt key to be pressed and released while scrolling without changing focus to the menu (Windows)
+
+v1.0
+- Options page with adjustable speeds
+- Fix issue with Flash
+- New icon
+
+v0.2
+- Fix speed getting stuck should page loose focus
+- Fix collision between meta key and browser native functionality

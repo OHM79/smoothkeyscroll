@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Smooth Key Scroll - Options</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="/bower_components/normalize-css/normalize.css">
+	<link rel="stylesheet" href="/bower_components/animate.css/animate.css">
+	<link rel="stylesheet" href="/fonts/fontello/css/fontello.css">
+	<link rel="stylesheet" href="/css/fonts.css">
+	<link rel="stylesheet" href="/css/options.css">
+	<!-- Favicons -->
+	<link rel="icon" type="image/png" href="img/icon128.png" sizes="128x128">
+	<link rel="icon" type="image/png" href="img/icon48.png" sizes="48x48">
+	<link rel="icon" type="image/png" href="img/favicon16@2x.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="img/favicon16.png" sizes="16x16" />
+</head>
+
+<body>
+	<header class="fade-down-plus">
+		<div class="main-logo">▼</div>
+		<div id="title"> Smooth Key Scroll </div>
+	</header>
+	<main class="main fade-down">
+		<div class="options" v-cloak>
+			<!-- 			<section class="section-option">
+				<h1 class="big title">Preferences</h1>
+			</section>
+ -->
+			<section id="sectionSpeed" class="section-option">
+				<h1>Scrolling Speed</h1>
+				<ul title="Number of pixels scrolled per frame at approximately 60 frames per second">
+					<li class="speed-li">
+						<span class="speed-keys">
+						<span class="chiclet arrow key">▼</span>
+						</span>
+						<!-- <label class="speed-label" for="Normal">Normal</label> -->
+						<input id="Normal" class="slider speed-slider" type="range" max="30" :style="{background:sliderBackground(options.Normal, 30)}" min="1" step="1" v-model="options.Normal" @change="mixpanelTrack('Options Clicked', {'Option': 'Normal Speed'})">
+						<span class="speed-value" v-text="options.Normal"></span>
+						<span class="speed-value-details"> px</span>
+						<!-- <span class="speed-translation" v-text="options.Normal | speedTranslation" :style="{opacity: options.Normal | translationOpacity"}></span> -->
+					</li>
+					<li class="speed-li">
+						<span class="speed-keys">
+						<span class="chiclet key">alt</span>
+						<span class="plus sign key separator">+</span>
+						<span class="chiclet arrow key">▼</span>
+						</span>
+						<!-- <label class="speed-label" for="Alt">Reading</label> -->
+						<input id="Alt" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Alt, 30)}" v-model="options.Alt" @change="mixpanelTrack('Options Clicked', {'Option': 'Alt Speed'})">
+						<span class="speed-value" v-text="options.Alt"></span>
+						<span class="speed-value-details"> px</span>
+						<!-- <span class="speed-translation" v-text="options.Alt | speedTranslation"></span> -->
+					</li>
+					<li class="speed-li">
+						<span class="speed-keys">
+
+						<span class="chiclet key">ctrl</span>
+						<span class="plus sign key separator">+</span>
+						<span class="chiclet arrow key">▼</span>
+						</span>
+						<!-- <label class="speed-label" for="Control">Skimming</label> -->
+						<input id="Control" class="slider speed-slider" type="range" max="30" min="1" step="1" :style="{background:sliderBackground(options.Control, 30)}" v-model="options.Control" @change="mixpanelTrack('Options Clicked', {'Option': 'Control Speed'})">
+						<span class="speed-value" v-text="options.Control"></span>
+						<span class="speed-value-details"> px</span>
+						<!-- <span class="speed-translation" v-text="options.Control | speedTranslation"></span> -->
+					</li>
+				</ul>
+			</section>
+			<!-- <div class="pro separator line"> -->
+			<!-- <span class="icon-lock pro separator text"> Premium Features</span> -->
+			<!-- </div> -->
+			<div class="pro features container">
+				<div class="pro features subcontainer" :class="{locked: UI.proFeaturesCover && !license.verified}">
+					<section id="sectionLayout" class="section-option hidden">
+						<h1>Movement Keys</h1>
+						<ul class="list-main">
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-arrows" value="arrows">
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-arrows">Arrows (&#8593;&#8595;&#8592;&#8594;)</label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-vi" value="vi">
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-vi">Vim (HJKL)</label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-gamer" value="gamer">
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-gamer">Gamer (WASD)</label>
+							</li>
+							<li>
+								<input type="radio" class="overriden radio input option-layout" :disabled="!license.verified" name="layout" v-model="options.Mapping" id="layout-ergo" value="ergo">
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option':'Key Mapping'})" class="fake radio ui" for="layout-ergo">Ergonomic (IJKL)</label>
+							</li>
+						</ul>
+					</section>
+					<section id="sectionGPU" class="section-option hidden">
+						<h1>Advanced</h1>
+						<ul>
+							<li class="animation-wrapper">
+								<input type="checkbox" id="option-disableHover" class="overriden checkbox input option" v-model="options.disableHover" :disabled="!license.verified">
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option': 'Disable Mouse Hover'})" class="fake checkbox ui" for="option-disableHover">Disable mouse hover effects while scrolling.</label>
+								<a href="#info-disable-hover" @click="UI.info.disableHover = !UI.info.disableHover" class="icon-info" :class="{open: UI.info.disableHover}"></a>
+								<p class="info-more" v-show="UI.info.disableHover" transition="slideFade">
+									Mouse hover effects are usually unnecessary when scrolling. Disabling them can improve scrolling performance. Read more about this in <a href="http://www.html5rocks.com/en/tutorials/speed/unnecessary-paints/#toc-combination" target="_blank">this</a> and <a href="http://www.thecssninja.com/javascript/pointer-events-60fps" target="_blank">that</a> articles.
+								</p>
+							</li>
+							<li class="animation-wrapper">
+								<input type="checkbox" id="option-disableBlueArrow" class="overriden checkbox input option" v-model="options.disableBlueArrow" :disabled="!license.verified">
+								<label @click="scrollToPay(), mixpanelTrack('Options Clicked', {'Option': 'Disable Blue Arrow'})" class="fake checkbox ui" for="option-disableBlueArrow">Disable the blue arrow navigation in Google instant search.</label>
+								<a href="#info-disable-blue-arrow" @click="UI.info.disableBlueArrow = !UI.info.disableBlueArrow" class="icon-info" :class="{open: UI.info.disableBlueArrow}"></a>
+								<p class="info-more" v-show="UI.info.disableBlueArrow" transition="slideFade">
+									If you have instant results enabled in your Google search preferences, you might have experienced the <a href="" @click.prevent="UI.lightbox.blueArrow = true">blue arrow</a> which allows you to navigate search results with the keyboard. <br>
+									By default Smooth Key Scroll stays out of the way, and lets the blue arrow do its job. However if you don't like the blue arrow you can use this option to disable it and have normal scrolling instead.
+								</p>
+								<div class="fullscreen lightbox wrapper" v-if="UI.lightbox.blueArrow" transition>
+									<div class="fullscreen lightbox background" @click="UI.lightbox.blueArrow = false"></div>
+									<span class="lightbox content">
+										<img src="img/screenshot-blue-arrow.png">
+										<button class="lightbox close button" @click="UI.lightbox.blueArrow = false"></button>
+									</span>
+								</div>
+							</li>
+						</ul>
+					</section>
+				</div>
+				<div v-if="UI.proFeaturesCover && !license.verified" @click="mixpanelTrack('Pay: Hide Pro Cover'), UI.proFeaturesCover=false" class="pro features cover" transition>
+					<i class="pro icon-lock"></i>
+					<h1 class="pro features title">Premium Features</h1>
+				</div>
+			</div>
+		</div>
+		<div id="module-license"></div>
+	</main>
+	<footer class="footer">
+		<a id="lifehacker" class="social proof link lifehacker" href="http://lifehacker.com/5979872/smooth-key-scroll-for-chrome-makes-keyboard-scrolling-better">
+			<img class="social proof logo" src="svg/lifehacker.svg" alt="Lifehacker">
+			<p class="social proof quote">this results in a much smoother keyboard scroll</p>
+		</a>
+		<a id="addictivetips" class="social proof link addictivetips" href="http://www.addictivetips.com/web/get-buttery-smooth-keyboard-scrolling-in-google-chrome/">
+			<img class="social proof logo" src="svg/addictivetips.svg" alt="Addictive Tips">
+			<p class="social proof quote">buttery smooth keyboard scrolling in google chrome</p>
+		</a>
+		<nav class="center">
+			<ul class="footerNav">
+				<li><a target="_blank" href="https://github.com/aristidesfl/smoothkeyscroll/issues?state=open">Support</a></li>
+				<li><a target="_blank" href="TERMS.txt">Terms</a></li>
+				<li><a target="_blank" href="LICENSE.txt">License</a></li>
+				<li><a href="mailto:mail@smoothkeyscroll.com">Contact</a></li>
+				<li><a target="_blank" id="copyright" href="http://www.smoothkeyscroll.com/">&copy; Smooth Key Scroll</a></li>
+			</ul>
+		</nav>
+	</footer>
+	<script src="/lib/mixpanel.js"></script>
+	<script src="/lib/rollbar.js"></script>
+	<script src="/js/options.js"></script>
+	<script src="/lib/analytics.js"></script>
+	<script src="/js/content.js"></script>
+</body>
+
+</html>
